@@ -1,0 +1,177 @@
+{
+  "Metadata": {
+    "title": "Main page",
+    "description": "Description main page"
+  },
+  "ThemeToggle": {
+    "appearance": "Appearance",
+    "light": {
+      "label": "Light",
+      "description": "Neutral workspace"
+    },
+    "dark": {
+      "label": "Dark",
+      "description": "Low-light workspace"
+    }
+  },
+  "AuthShell": {
+    "brand": "Social Feed",
+    "highlights": {
+      "logic": {
+        "title": "Same authentication logic",
+        "description": "Routes, better-auth flows, validation, and redirect behavior remain unchanged."
+      },
+      "layout": {
+        "title": "Consistent product layout",
+        "description": "Every auth screen now follows the same header, form, support copy, and spacing system."
+      }
+    }
+  },
+  "FeedPage": {
+    "eyebrow": "Members feed",
+    "title": "Social Feed",
+    "description": "A shared stream of updates, conversations, and people worth following.",
+    "heroHint": "Search for people first, then move through the main stream.",
+    "searchEyebrow": "Search",
+    "pulseTitle": "Feed pulse",
+    "pulseDescription": "A quick read on active authors, reactions, and the current tempo.",
+    "streamTitle": "Main stream",
+    "streamDescription": "Posts now stream from an ISR-backed server layer and replace the skeleton when ready.",
+    "authorsTitle": "Close authors",
+    "authorsDescription": "People you may want to keep nearby while scanning the main stream.",
+    "savedTitle": "Saved searches",
+    "savedEmpty": "No saved lists yet. Start with the username search in the toolbar above.",
+    "memberTitle": "Access tier",
+    "memberDescription": "Auth and session state remain dynamic, while the feed itself is moved into a separate cached layer.",
+    "guestState": "Guest",
+    "memberState": "Member",
+    "emptyStateDescription": "Empty states now follow the same calm structure as the rest of the product.",
+    "labels": {
+      "handle": "Handle",
+      "status": "Status",
+      "saveAuthorAria": "Save author"
+    },
+    "actions": {
+      "follow": "Follow",
+      "register": "Register to follow"
+    },
+    "search": {
+      "placeholder": "@username",
+      "button": "Search",
+      "ariaLabel": "Search by username"
+    },
+    "summary": {
+      "posts": "Posts",
+      "authors": "Authors",
+      "likes": "Likes",
+      "comments": "Comments",
+      "reposts": "Reposts"
+    },
+    "profile": {
+      "fallbackName": "Current user"
+    },
+    "memberCard": {
+      "primaryCta": "Create account",
+      "secondaryCta": "Sign in"
+    }
+  },
+  "LoginPage": {
+    "badge": "Sign in",
+    "title": "Access your account",
+    "description": "Sign in with your existing credentials or continue with GitHub. The authentication flow and session handling remain intact."
+  },
+  "LoginForm": {
+    "login": "Email or username",
+    "login_placeholder": "m@example.com or john_doe",
+    "password": "Password",
+    "forgot_password": "Forgot your password?",
+    "login_button": "Login",
+    "login_failed": "Unable to sign in with these credentials.",
+    "or_continue_with": "Or continue with",
+    "login_with_github": "Login with GitHub",
+    "no_account": "Don't have an account?",
+    "sign_up": "Sign up"
+  },
+  "SignupPage": {
+    "badge": "Create account",
+    "title": "Join the product",
+    "description": "Create a new account with the same better-auth flow, wrapped in a cleaner structure with clearer hierarchy and calmer spacing."
+  },
+  "SignupForm": {
+    "name": "Full name",
+    "name_placeholder": "John Doe",
+    "email": "Email",
+    "email_placeholder": "m@example.com",
+    "username": "Username",
+    "username_placeholder": "john_doe",
+    "username_description": "Use 3 or more letters, numbers, or underscores.",
+    "password": "Password",
+    "password_description": "Must be at least 8 characters long.",
+    "confirm_password": "Confirm password",
+    "submit": "Create account",
+    "or_continue_with": "Or continue with",
+    "github": "Sign up with GitHub",
+    "has_account": "Already have an account?",
+    "sign_in": "Sign in",
+    "errors": {
+      "password_mismatch": "Passwords do not match.",
+      "password_length": "Password must be at least 8 characters long.",
+      "username_length": "Username must be at least 3 characters long.",
+      "signup_failed": "Unable to create your account."
+    }
+  },
+  "ForgotPasswordPage": {
+    "badge": "Recovery",
+    "title": "Reset your password",
+    "description": "Request a secure reset link and continue through the existing recovery flow without changing API behavior or form submission logic."
+  },
+  "ForgotPasswordForm": {
+    "email": "Email",
+    "email_placeholder": "m@example.com",
+    "email_description": "We will send the recovery link to this address.",
+    "submit": "Send reset link",
+    "back_to_login": "Back to login",
+    "errors": {
+      "request_failed": "Unable to send reset email."
+    },
+    "success": "If that email exists, a password reset link has been sent."
+  },
+  "ResetPasswordPage": {
+    "badge": "Password reset",
+    "title": "Choose a new password",
+    "description": "Set a new password in the same protected flow. Only the visual composition and field hierarchy were updated."
+  },
+  "ResetPasswordForm": {
+    "password": "New password",
+    "password_description": "Use at least 8 characters.",
+    "confirm_password": "Confirm new password",
+    "submit": "Reset password",
+    "back_to_login": "Back to login",
+    "errors": {
+      "missing_token": "Reset token is missing or invalid.",
+      "password_mismatch": "Passwords do not match.",
+      "password_length": "Password must be at least 8 characters long.",
+      "reset_failed": "Unable to reset password."
+    }
+  },
+  "VerifyEmailPage": {
+    "badge": "Email verification",
+    "title": "Confirm your email",
+    "description": "Enter the code from your inbox and complete the existing verification step in a more structured, product-style screen."
+  },
+  "VerifyEmailForm": {
+    "code": "Verification code",
+    "code_description": "Enter the code sent to {email}.",
+    "email_fallback": "your email",
+    "submit": "Verify email",
+    "resend": "Resend code",
+    "back_to_login": "Back to login",
+    "errors": {
+      "missing_email": "Verification email is missing.",
+      "otp_length": "Enter the 6-digit code from your email.",
+      "verify_failed": "Unable to verify email.",
+      "resend_failed": "Unable to resend verification code."
+    },
+    "success": "A new verification code has been sent."
+  }
+}

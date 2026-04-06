@@ -1,0 +1,177 @@
+{
+  "Metadata": {
+    "title": "Главная страница",
+    "description": "Описание главной страницы"
+  },
+  "ThemeToggle": {
+    "appearance": "Оформление",
+    "light": {
+      "label": "Светлая",
+      "description": "Нейтральное рабочее пространство"
+    },
+    "dark": {
+      "label": "Тёмная",
+      "description": "Режим для слабого освещения"
+    }
+  },
+  "AuthShell": {
+    "brand": "Social Feed",
+    "highlights": {
+      "logic": {
+        "title": "Та же логика авторизации",
+        "description": "Маршруты, better-auth flow, валидация и поведение редиректов остаются без изменений."
+      },
+      "layout": {
+        "title": "Единая продуктовая структура",
+        "description": "Каждый экран авторизации следует одной системе заголовков, формы, вспомогательного текста и отступов."
+      }
+    }
+  },
+  "FeedPage": {
+    "eyebrow": "Лента участников",
+    "title": "Social Feed",
+    "description": "Общий поток обновлений, обсуждений и авторов, за которыми стоит следить.",
+    "heroHint": "Сначала найдите людей, затем переходите к основному потоку.",
+    "searchEyebrow": "Поиск",
+    "pulseTitle": "Сводка по ленте",
+    "pulseDescription": "Короткий обзор по активным авторам, реакциям и текущему темпу.",
+    "streamTitle": "Основной поток",
+    "streamDescription": "Посты теперь приходят из серверного слоя с ISR и заменяют skeleton после загрузки.",
+    "authorsTitle": "Близкие авторы",
+    "authorsDescription": "Люди, которых удобно держать рядом, пока вы просматриваете основную ленту.",
+    "savedTitle": "Сохранённые поиски",
+    "savedEmpty": "Пока нет сохранённых списков. Начните с поиска по username в панели выше.",
+    "memberTitle": "Уровень доступа",
+    "memberDescription": "Состояние auth и session остаётся динамическим, а сама лента вынесена в отдельный кэшируемый слой.",
+    "guestState": "Гость",
+    "memberState": "Участник",
+    "emptyStateDescription": "Пустые состояния теперь следуют той же спокойной структуре, что и остальной интерфейс.",
+    "labels": {
+      "handle": "Профиль",
+      "status": "Статус",
+      "saveAuthorAria": "Сохранить автора"
+    },
+    "actions": {
+      "follow": "Подписаться",
+      "register": "Зарегистрироваться"
+    },
+    "search": {
+      "placeholder": "@username",
+      "button": "Найти",
+      "ariaLabel": "Поиск по username"
+    },
+    "summary": {
+      "posts": "Посты",
+      "authors": "Авторы",
+      "likes": "Лайки",
+      "comments": "Комментарии",
+      "reposts": "Репосты"
+    },
+    "profile": {
+      "fallbackName": "Текущий пользователь"
+    },
+    "memberCard": {
+      "primaryCta": "Создать аккаунт",
+      "secondaryCta": "Войти"
+    }
+  },
+  "LoginPage": {
+    "badge": "Вход",
+    "title": "Войдите в аккаунт",
+    "description": "Войдите с существующими данными или продолжите через GitHub. Поведение авторизации и сессий остаётся прежним."
+  },
+  "LoginForm": {
+    "login": "Email или username",
+    "login_placeholder": "m@example.com или john_doe",
+    "password": "Пароль",
+    "forgot_password": "Забыли пароль?",
+    "login_button": "Войти",
+    "login_failed": "Не удалось войти с этими данными.",
+    "or_continue_with": "Или продолжить через",
+    "login_with_github": "Войти через GitHub",
+    "no_account": "Нет аккаунта?",
+    "sign_up": "Зарегистрироваться"
+  },
+  "SignupPage": {
+    "badge": "Создать аккаунт",
+    "title": "Присоединиться к продукту",
+    "description": "Создайте новый аккаунт в том же better-auth flow, но в более чистой и понятной структуре."
+  },
+  "SignupForm": {
+    "name": "Полное имя",
+    "name_placeholder": "Иван Иванов",
+    "email": "Email",
+    "email_placeholder": "m@example.com",
+    "username": "Username",
+    "username_placeholder": "ivan_ivanov",
+    "username_description": "Используйте 3 или более букв, цифр или символов подчёркивания.",
+    "password": "Пароль",
+    "password_description": "Минимум 8 символов.",
+    "confirm_password": "Подтвердите пароль",
+    "submit": "Создать аккаунт",
+    "or_continue_with": "Или продолжить через",
+    "github": "Зарегистрироваться через GitHub",
+    "has_account": "Уже есть аккаунт?",
+    "sign_in": "Войти",
+    "errors": {
+      "password_mismatch": "Пароли не совпадают.",
+      "password_length": "Пароль должен содержать не менее 8 символов.",
+      "username_length": "Username должен содержать не менее 3 символов.",
+      "signup_failed": "Не удалось создать аккаунт."
+    }
+  },
+  "ForgotPasswordPage": {
+    "badge": "Восстановление",
+    "title": "Сброс пароля",
+    "description": "Запросите безопасную ссылку для сброса и продолжайте существующий recovery flow без изменения API или логики отправки формы."
+  },
+  "ForgotPasswordForm": {
+    "email": "Email",
+    "email_placeholder": "m@example.com",
+    "email_description": "Мы отправим ссылку для восстановления на этот адрес.",
+    "submit": "Отправить ссылку",
+    "back_to_login": "Назад ко входу",
+    "errors": {
+      "request_failed": "Не удалось отправить письмо для сброса."
+    },
+    "success": "Если такой email существует, ссылка для сброса уже отправлена."
+  },
+  "ResetPasswordPage": {
+    "badge": "Сброс пароля",
+    "title": "Задайте новый пароль",
+    "description": "Установите новый пароль в том же защищённом потоке. Изменены только визуальная структура и иерархия полей."
+  },
+  "ResetPasswordForm": {
+    "password": "Новый пароль",
+    "password_description": "Используйте не менее 8 символов.",
+    "confirm_password": "Подтвердите новый пароль",
+    "submit": "Сбросить пароль",
+    "back_to_login": "Назад ко входу",
+    "errors": {
+      "missing_token": "Токен сброса отсутствует или недействителен.",
+      "password_mismatch": "Пароли не совпадают.",
+      "password_length": "Пароль должен содержать не менее 8 символов.",
+      "reset_failed": "Не удалось сбросить пароль."
+    }
+  },
+  "VerifyEmailPage": {
+    "badge": "Подтверждение email",
+    "title": "Подтвердите email",
+    "description": "Введите код из письма и завершите существующий шаг подтверждения в более структурированном интерфейсе."
+  },
+  "VerifyEmailForm": {
+    "code": "Код подтверждения",
+    "code_description": "Введите код, отправленный на {email}.",
+    "email_fallback": "ваш email",
+    "submit": "Подтвердить email",
+    "resend": "Отправить код повторно",
+    "back_to_login": "Назад ко входу",
+    "errors": {
+      "missing_email": "Email для подтверждения отсутствует.",
+      "otp_length": "Введите 6-значный код из письма.",
+      "verify_failed": "Не удалось подтвердить email.",
+      "resend_failed": "Не удалось отправить код повторно."
+    },
+    "success": "Новый код подтверждения отправлен."
+  }
+}
