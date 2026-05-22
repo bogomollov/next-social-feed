@@ -1,7 +1,8 @@
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/components/auth-shell";
-import { ResetPasswordForm } from "@/components/reset-password-form";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
+import { redirectIfAuthenticated } from "@/server/auth/session";
 
 export default async function ResetPasswordPage({
   params,
@@ -12,6 +13,7 @@ export default async function ResetPasswordPage({
 }) {
   await connection();
   const { locale } = await params;
+  await redirectIfAuthenticated(locale);
   const t = await getTranslations({ locale, namespace: "ResetPasswordPage" });
 
   const resolvedSearchParams = await searchParams;

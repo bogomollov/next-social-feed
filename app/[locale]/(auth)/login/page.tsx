@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/components/auth-shell";
-import { LoginForm } from "@/components/login-form";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { LoginForm } from "@/features/auth/components/login-form";
+import { redirectIfAuthenticated } from "@/server/auth/session";
 
 export default async function LoginPage({
   params,
@@ -8,6 +9,7 @@ export default async function LoginPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  await redirectIfAuthenticated(locale);
   const t = await getTranslations({ locale, namespace: "LoginPage" });
 
   return (

@@ -7,9 +7,9 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server";
-import { ThemeProvider } from "@/components/theme-provider";
-import { DirectionProvider } from "@/components/ui/direction";
-import { routing } from "@/i18n/routing";
+import { routing } from "@/shared/i18n/routing";
+import { DirectionProvider } from "@/shared/ui/direction";
+import { ThemeProvider } from "@/shared/ui/theme-provider";
 
 const fontSans = Manrope({
   variable: "--font-sans",
@@ -60,10 +60,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       lang={locale}
       dir="ltr"
       className="h-full antialiased"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body
-        className={`${(fontSans.className, fontMono.className)} flex min-h-full flex-col`}
+        className={`${fontSans.variable} ${fontMono.variable} flex min-h-full flex-col`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider

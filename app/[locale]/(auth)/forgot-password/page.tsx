@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/components/auth-shell";
-import { ForgotPasswordForm } from "@/components/forgot-password-form";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-form";
+import { redirectIfAuthenticated } from "@/server/auth/session";
 
 export default async function ForgotPasswordPage({
   params,
@@ -8,6 +9,7 @@ export default async function ForgotPasswordPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  await redirectIfAuthenticated(locale);
   const t = await getTranslations({ locale, namespace: "ForgotPasswordPage" });
 
   return (

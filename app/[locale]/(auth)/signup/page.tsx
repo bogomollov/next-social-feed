@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/components/auth-shell";
-import { SignupForm } from "@/components/signup-form";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { SignupForm } from "@/features/auth/components/signup-form";
+import { redirectIfAuthenticated } from "@/server/auth/session";
 
 export default async function SignupPage({
   params,
@@ -8,6 +9,7 @@ export default async function SignupPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  await redirectIfAuthenticated(locale);
   const t = await getTranslations({ locale, namespace: "SignupPage" });
 
   return (

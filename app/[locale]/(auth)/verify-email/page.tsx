@@ -1,7 +1,8 @@
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/components/auth-shell";
-import { VerifyEmailForm } from "@/components/verify-email-form";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { VerifyEmailForm } from "@/features/auth/components/verify-email-form";
+import { redirectIfAuthenticated } from "@/server/auth/session";
 
 export default async function VerifyEmailPage({
   params,
@@ -12,6 +13,7 @@ export default async function VerifyEmailPage({
 }) {
   await connection();
   const { locale } = await params;
+  await redirectIfAuthenticated(locale);
   const t = await getTranslations({ locale, namespace: "VerifyEmailPage" });
 
   const resolvedSearchParams = await searchParams;

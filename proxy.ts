@@ -1,7 +1,7 @@
 import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth } from "./server/auth";
+import { routing } from "./shared/i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 type AppLocale = (typeof routing.locales)[number];

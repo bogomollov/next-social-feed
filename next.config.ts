@@ -6,10 +6,11 @@ const nextConfig: NextConfig = {
 };
 
 const withNextIntl = createNextIntlPlugin({
+  requestConfig: "./shared/i18n/request.ts",
   experimental: {
-    srcPath: "./i18n",
+    srcPath: ["./app", "./features", "./shared"],
     messages: {
-      path: "./locales",
+      path: "./shared/i18n/locales",
       format: "json",
       locales: "infer",
       precompile: true,

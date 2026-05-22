@@ -8,6 +8,20 @@
       "when": 1775833043896,
       "tag": "0000_public_next_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775838000000,
+      "tag": "0001_account_oauth_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775839000000,
+      "tag": "0002_auth_session_verification",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { reset, seed } from "drizzle-seed";
 import { Pool } from "pg";
-import { post } from "./schema";
+import { post } from "@/server/db/schema";
 
 config({ path: ".env" });
 
