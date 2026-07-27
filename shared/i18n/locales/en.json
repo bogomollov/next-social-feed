@@ -41,7 +41,6 @@
     "authorsDescription": "People you may want to keep nearby while scanning the main stream.",
     "savedTitle": "Saved searches",
     "savedEmpty": "No saved lists yet. Start with the username search in the toolbar above.",
-    "memberTitle": "Access tier",
     "memberDescription": "Auth and session state remain dynamic, while the feed itself is moved into a separate cached layer.",
     "guestState": "Guest",
     "memberState": "Member",
