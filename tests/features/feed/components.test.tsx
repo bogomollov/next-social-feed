@@ -22,6 +22,16 @@ vi.mock("@/features/feed/server/toggle-like", () => ({
   toggleLike: (...args: unknown[]) => mockToggleLike(...args),
 }));
 
+const mockGetComments = vi.fn();
+vi.mock("@/features/feed/server/comments", () => ({
+  getComments: (...args: unknown[]) => mockGetComments(...args),
+}));
+
+const mockCreateComment = vi.fn();
+vi.mock("@/features/feed/server/create-comment", () => ({
+  createComment: (...args: unknown[]) => mockCreateComment(...args),
+}));
+
 import { FeedInteractionBar } from "@/features/feed/components/feed-interaction-bar";
 import { FeedSections } from "@/features/feed/components/feed-sections";
 
@@ -35,6 +45,24 @@ const composerProps = {
     too_long: "Keep your post under 500 characters.",
     unauthorized: "Sign in to post.",
   },
+};
+
+const commentsLabels = {
+  placeholder: "Write a comment...",
+  submit: "Comment",
+  empty: "No comments yet.",
+  loadError: "Unable to load comments.",
+  toggleAria: "Toggle comments",
+  errors: {
+    empty: "Write something before commenting.",
+    too_long: "Keep your comment under 500 characters.",
+    unauthorized: "Sign in to comment.",
+  },
+};
+
+const interactionBarProps = {
+  authorName: "Maya Torres",
+  commentsLabels,
 };
 
 const posts = [
@@ -67,6 +95,9 @@ const posts = [
 describe("feed components", () => {
   beforeEach(() => {
     mockToggleLike.mockReset();
+    mockGetComments.mockReset();
+    mockCreateComment.mockReset();
+    mockGetComments.mockResolvedValue({ status: "success", comments: [] });
   });
 
   it("renders signup links for unauthenticated interaction bars", () => {
@@ -81,6 +112,7 @@ describe("feed components", () => {
         isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
+        {...interactionBarProps}
       />,
     );
 
@@ -103,6 +135,7 @@ describe("feed components", () => {
         isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
+        {...interactionBarProps}
       />,
     );
 
@@ -122,6 +155,7 @@ describe("feed components", () => {
         isOwnPost
         followLabel="Follow"
         registerLabel="Register to follow"
+        {...interactionBarProps}
       />,
     );
 
@@ -142,6 +176,7 @@ describe("feed components", () => {
         isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
+        {...interactionBarProps}
       />,
     );
 
@@ -166,6 +201,7 @@ describe("feed components", () => {
         isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
+        {...interactionBarProps}
       />,
     );
 
@@ -175,6 +211,90 @@ describe("feed components", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /5/ })).toBeInTheDocument(),
     );
+  });
+
+  it("loads and shows comments when the comments button is toggled", async () => {
+    mockGetComments.mockResolvedValue({
+      status: "success",
+      comments: [
+        {
+          id: "comment-1",
+          author: "Jordan Lee",
+          handle: "@jordan",
+          content: "Great post!",
+          createdAt: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /toggle comments/i }));
+
+    await waitFor(() => expect(mockGetComments).toHaveBeenCalledWith("post-1"));
+    expect(await screen.findByText("Great post!")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /toggle comments/i }));
+    expect(screen.queryByText("Great post!")).not.toBeInTheDocument();
+  });
+
+  it("submits a new comment and optimistically bumps the comment count", async () => {
+    mockCreateComment.mockResolvedValue({
+      status: "success",
+      comment: {
+        id: "comment-2",
+        author: "Maya Torres",
+        handle: "@maya",
+        content: "Thanks for reading!",
+        createdAt: "2026-01-02T00:00:00.000Z",
+      },
+    });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /toggle comments/i }));
+    await waitFor(() => expect(mockGetComments).toHaveBeenCalled());
+
+    const textbox = await screen.findByPlaceholderText("Write a comment...");
+    fireEvent.change(textbox, { target: { value: "Thanks for reading!" } });
+    fireEvent.click(screen.getByRole("button", { name: "Comment" }));
+
+    await waitFor(() =>
+      expect(mockCreateComment).toHaveBeenCalledWith(
+        "post-1",
+        "Thanks for reading!",
+      ),
+    );
+    expect(await screen.findByText("Thanks for reading!")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /toggle comments/i }),
+    ).toHaveTextContent("3");
   });
 
   it("renders post cards", () => {
@@ -188,6 +308,7 @@ describe("feed components", () => {
         isAuthorized={false}
         currentUserHandle={null}
         likedPostIds={new Set()}
+        commentsLabels={commentsLabels}
         {...composerProps}
       />,
     );
@@ -211,6 +332,7 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle={null}
         likedPostIds={new Set()}
+        commentsLabels={commentsLabels}
         {...composerProps}
       />,
     );
@@ -232,6 +354,7 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle="@maya"
         likedPostIds={new Set()}
+        commentsLabels={commentsLabels}
         {...composerProps}
       />,
     );

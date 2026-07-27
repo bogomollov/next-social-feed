@@ -141,3 +141,25 @@ export const postLike = pgTable(
     userIdIdx: index("post_like_user_id_idx").on(table.userId),
   }),
 );
+
+export const postComment = pgTable(
+  "post_comment",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => post.id, { onDelete: "cascade" }),
+    authorId: uuid("author_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    authorName: varchar("author_name", { length: 255 }).notNull(),
+    authorHandle: varchar("author_handle", { length: 255 }).notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    postIdIdx: index("post_comment_post_id_idx").on(table.postId),
+    authorIdIdx: index("post_comment_author_id_idx").on(table.authorId),
+    createdAtIdx: index("post_comment_created_at_idx").on(table.createdAt),
+  }),
+);

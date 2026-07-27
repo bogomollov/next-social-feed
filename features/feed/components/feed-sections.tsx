@@ -30,6 +30,18 @@ export type FeedSectionsProps = {
     too_long: string;
     unauthorized: string;
   };
+  commentsLabels: {
+    placeholder: string;
+    submit: string;
+    empty: string;
+    loadError: string;
+    toggleAria: string;
+    errors: {
+      empty: string;
+      too_long: string;
+      unauthorized: string;
+    };
+  };
 };
 
 const COMPOSER_TOPICS = [
@@ -66,6 +78,7 @@ export function FeedSections({
   composerSubmitLabel,
   composerTopicPlaceholder,
   composerErrors,
+  commentsLabels,
 }: FeedSectionsProps) {
   const topics = Array.from(
     new Set([...COMPOSER_TOPICS, ...posts.map((post) => post.topic)]),
@@ -122,6 +135,8 @@ export function FeedSections({
                   isOwnPost={post.handle === currentUserHandle}
                   followLabel={followLabel}
                   registerLabel={registerLabel}
+                  authorName={authorName}
+                  commentsLabels={commentsLabels}
                 />
               </CardContent>
             </Card>
