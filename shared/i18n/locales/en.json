@@ -18,12 +18,12 @@
     "brand": "Social Feed",
     "highlights": {
       "logic": {
-        "title": "Same authentication logic",
-        "description": "Routes, better-auth flows, validation, and redirect behavior remain unchanged."
+        "title": "Secure sign-in",
+        "description": "Your credentials stay protected with encrypted sessions, every time you sign in."
       },
       "layout": {
-        "title": "Consistent product layout",
-        "description": "Every auth screen now follows the same header, form, support copy, and spacing system."
+        "title": "One familiar experience",
+        "description": "Sign in, sign up, or recover your account — it always feels like the same place."
       }
     }
   },
@@ -36,7 +36,7 @@
     "pulseTitle": "Feed pulse",
     "pulseDescription": "A quick read on active authors, reactions, and the current tempo.",
     "streamTitle": "Main stream",
-    "streamDescription": "Posts now stream from an ISR-backed server layer and replace the skeleton when ready.",
+    "streamDescription": "See what people are posting right now, with fresh updates as they happen.",
     "authorsTitle": "Close authors",
     "authorsDescription": "People you may want to keep nearby while scanning the main stream.",
     "savedTitle": "Saved searches",
@@ -77,7 +77,7 @@
   "LoginPage": {
     "badge": "Sign in",
     "title": "Access your account",
-    "description": "Sign in with your existing credentials or continue with GitHub. The authentication flow and session handling remain intact."
+    "description": "Sign in with your email or username to catch up with your feed, or continue with GitHub."
   },
   "LoginForm": {
     "login": "Email or username",
@@ -93,8 +93,8 @@
   },
   "SignupPage": {
     "badge": "Create account",
-    "title": "Join the product",
-    "description": "Create a new account with the same better-auth flow, wrapped in a cleaner structure with clearer hierarchy and calmer spacing."
+    "title": "Join Social Feed",
+    "description": "Create your account and start sharing with the people who matter to you."
   },
   "SignupForm": {
     "name": "Full name",
@@ -122,7 +122,7 @@
   "ForgotPasswordPage": {
     "badge": "Recovery",
     "title": "Reset your password",
-    "description": "Request a secure reset link and continue through the existing recovery flow without changing API behavior or form submission logic."
+    "description": "Enter your email and we'll send you a link to reset your password."
   },
   "ForgotPasswordForm": {
     "email": "Email",
@@ -138,7 +138,7 @@
   "ResetPasswordPage": {
     "badge": "Password reset",
     "title": "Choose a new password",
-    "description": "Set a new password in the same protected flow. Only the visual composition and field hierarchy were updated."
+    "description": "Set a new password to get back into your account."
   },
   "ResetPasswordForm": {
     "password": "New password",
@@ -156,7 +156,7 @@
   "VerifyEmailPage": {
     "badge": "Email verification",
     "title": "Confirm your email",
-    "description": "Enter the code from your inbox and complete the existing verification step in a more structured, product-style screen."
+    "description": "Enter the code we sent to your inbox to verify your email."
   },
   "VerifyEmailForm": {
     "code": "Verification code",

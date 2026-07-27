@@ -29,6 +29,7 @@ import {
 } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { PageBody, PageHeader, PageShell } from "@/shared/ui/page-shell";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { ModeToggle } from "@/shared/ui/theme-button";
 
 type PageProps = {
@@ -296,8 +297,13 @@ function FeedSummaryCardFallback({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="surface-subtle p-3 text-sm text-muted-foreground">
-          Loading feed summary...
+        <div className="grid grid-cols-2 gap-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className="surface-subtle p-2.5">
+              <Skeleton className="h-6 w-10" />
+              <Skeleton className="mt-2 h-3 w-16" />
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
@@ -385,10 +391,20 @@ function AuthorsCardFallback({
         </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="surface-subtle p-4 text-sm text-muted-foreground">
-          Loading authors...
-        </div>
+      <CardContent className="grid gap-3">
+        {Array.from({ length: 2 }).map((_, index) => (
+          <div
+            key={index}
+            className="surface-subtle flex items-start gap-3 p-4"
+          >
+            <Skeleton className="size-9 rounded-full" />
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );
