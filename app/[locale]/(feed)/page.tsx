@@ -136,7 +136,7 @@ async function SessionBadge({
   return (
     <Badge variant="outline" className="gap-1.5">
       <IconUserCircle size={14} />
-      {`@${currentUser.username}`}
+      {currentUser.displayName}
     </Badge>
   );
 }
