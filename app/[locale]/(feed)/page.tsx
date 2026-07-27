@@ -87,28 +87,54 @@ async function getFeedAuthors(postsPromise: Promise<FeedPost[]>) {
   );
 }
 
-function SessionBadgeFallback({ guestState }: { guestState: string }) {
+function GuestActions({
+  loginLabel,
+  registerLabel,
+}: {
+  loginLabel: string;
+  registerLabel: string;
+}) {
   return (
-    <Badge variant="outline" className="gap-1.5">
-      <IconUserCircle size={14} />
-      {guestState}
-    </Badge>
+    <div className="flex items-center gap-2">
+      <Button asChild variant="outline" size="sm">
+        <Link href="/login">{loginLabel}</Link>
+      </Button>
+      <Button asChild size="sm">
+        <Link href="/signup">{registerLabel}</Link>
+      </Button>
+    </div>
   );
+}
+
+function SessionBadgeFallback({
+  loginLabel,
+  registerLabel,
+}: {
+  loginLabel: string;
+  registerLabel: string;
+}) {
+  return <GuestActions loginLabel={loginLabel} registerLabel={registerLabel} />;
 }
 
 async function SessionBadge({
   fallbackName,
-  guestState,
+  loginLabel,
+  registerLabel,
 }: {
   fallbackName: string;
-  guestState: string;
+  loginLabel: string;
+  registerLabel: string;
 }) {
   const currentUser = await getCurrentUser(fallbackName);
+
+  if (!currentUser) {
+    return <GuestActions loginLabel={loginLabel} registerLabel={registerLabel} />;
+  }
 
   return (
     <Badge variant="outline" className="gap-1.5">
       <IconUserCircle size={14} />
-      {currentUser ? `@${currentUser.username}` : guestState}
+      {`@${currentUser.username}`}
     </Badge>
   );
 }
@@ -351,11 +377,17 @@ export default async function FeedPage({ params }: PageProps) {
           actions={
             <>
               <Suspense
-                fallback={<SessionBadgeFallback guestState={t("guestState")} />}
+                fallback={
+                  <SessionBadgeFallback
+                    loginLabel={t("memberCard.secondaryCta")}
+                    registerLabel={t("memberCard.primaryCta")}
+                  />
+                }
               >
                 <SessionBadge
                   fallbackName={t("profile.fallbackName")}
-                  guestState={t("guestState")}
+                  loginLabel={t("memberCard.secondaryCta")}
+                  registerLabel={t("memberCard.primaryCta")}
                 />
               </Suspense>
               <ModeToggle />
