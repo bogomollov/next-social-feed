@@ -585,6 +585,18 @@ export default async function FeedPage({ params }: PageProps) {
                 too_long: t("composer.errors.too_long"),
                 unauthorized: t("composer.errors.unauthorized"),
               }}
+              commentsLabels={{
+                placeholder: t("comments.placeholder"),
+                submit: t("comments.submit"),
+                empty: t("comments.empty"),
+                loadError: t("comments.errors.load_failed"),
+                toggleAria: t("comments.toggleAria"),
+                errors: {
+                  empty: t("comments.errors.empty"),
+                  too_long: t("comments.errors.too_long"),
+                  unauthorized: t("comments.errors.unauthorized"),
+                },
+              }}
             />
           </Suspense>
 

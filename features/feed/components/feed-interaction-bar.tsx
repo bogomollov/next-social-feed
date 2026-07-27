@@ -12,6 +12,20 @@ import { toggleLike } from "@/features/feed/server/toggle-like";
 import { Link } from "@/shared/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { PostComments } from "./post-comments";
+
+type CommentsLabels = {
+  placeholder: string;
+  submit: string;
+  empty: string;
+  loadError: string;
+  toggleAria: string;
+  errors: {
+    empty: string;
+    too_long: string;
+    unauthorized: string;
+  };
+};
 
 type FeedInteractionBarProps = {
   postId: string;
@@ -23,6 +37,8 @@ type FeedInteractionBarProps = {
   isOwnPost: boolean;
   followLabel: string;
   registerLabel: string;
+  authorName: string;
+  commentsLabels: CommentsLabels;
 };
 
 export function FeedInteractionBar({
@@ -35,8 +51,12 @@ export function FeedInteractionBar({
   isOwnPost,
   followLabel,
   registerLabel,
+  authorName,
+  commentsLabels,
 }: FeedInteractionBarProps) {
   const [likeState, setLikeState] = useState({ liked, count: likes });
+  const [commentCount, setCommentCount] = useState(comments);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleToggleLike = () => {
@@ -96,36 +116,57 @@ export function FeedInteractionBar({
   const LikeIcon = likeState.liked ? IconHeartFilled : IconHeart;
 
   return (
-    <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={isPending}
-          aria-pressed={likeState.liked}
-          onClick={handleToggleLike}
-          className={cn(
-            likeState.liked && "border-destructive/40 text-destructive",
-          )}
-        >
-          <LikeIcon data-icon="inline-start" />
-          {likeState.count}
-        </Button>
-        <Button size="sm" variant="outline">
-          <IconMessageCircle data-icon="inline-start" />
-          {comments}
-        </Button>
-        <Button size="sm" variant="outline">
-          <IconRepeat data-icon="inline-start" />
-          {reposts}
-        </Button>
+    <div className="flex flex-col gap-3 border-t border-border pt-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isPending}
+            aria-pressed={likeState.liked}
+            onClick={handleToggleLike}
+            className={cn(
+              likeState.liked && "border-destructive/40 text-destructive",
+            )}
+          >
+            <LikeIcon data-icon="inline-start" />
+            {likeState.count}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            aria-pressed={commentsOpen}
+            aria-label={commentsLabels.toggleAria}
+            onClick={() => setCommentsOpen((current) => !current)}
+            className={cn(commentsOpen && "border-primary/40 text-primary")}
+          >
+            <IconMessageCircle data-icon="inline-start" />
+            {commentCount}
+          </Button>
+          <Button size="sm" variant="outline">
+            <IconRepeat data-icon="inline-start" />
+            {reposts}
+          </Button>
+        </div>
+        {isOwnPost ? null : (
+          <Button size="sm">
+            <IconUserPlus data-icon="inline-start" />
+            {followLabel}
+          </Button>
+        )}
       </div>
-      {isOwnPost ? null : (
-        <Button size="sm">
-          <IconUserPlus data-icon="inline-start" />
-          {followLabel}
-        </Button>
-      )}
+      {commentsOpen ? (
+        <PostComments
+          postId={postId}
+          authorName={authorName}
+          placeholder={commentsLabels.placeholder}
+          submitLabel={commentsLabels.submit}
+          emptyLabel={commentsLabels.empty}
+          loadErrorLabel={commentsLabels.loadError}
+          errorMessages={commentsLabels.errors}
+          onCommentAdded={() => setCommentCount((count) => count + 1)}
+        />
+      ) : null}
     </div>
   );
 }
