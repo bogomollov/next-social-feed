@@ -145,7 +145,7 @@ async function FeedSectionsWithSession({
   fallbackName,
   postsPromise,
   ...props
-}: Omit<FeedSectionsProps, "posts" | "isAuthorized"> & {
+}: Omit<FeedSectionsProps, "posts" | "isAuthorized" | "authorName"> & {
   fallbackName: string;
   postsPromise: Promise<FeedPost[]>;
 }) {
@@ -159,6 +159,7 @@ async function FeedSectionsWithSession({
       {...props}
       posts={posts}
       isAuthorized={Boolean(currentUser)}
+      authorName={currentUser?.displayName ?? fallbackName}
     />
   );
 }
@@ -566,6 +567,13 @@ export default async function FeedPage({ params }: PageProps) {
               streamDescription={t("streamDescription")}
               followLabel={t("actions.follow")}
               registerLabel={t("actions.register")}
+              composerPlaceholder={t("composer.placeholder")}
+              composerSubmitLabel={t("composer.submit")}
+              composerErrors={{
+                empty: t("composer.errors.empty"),
+                too_long: t("composer.errors.too_long"),
+                unauthorized: t("composer.errors.unauthorized"),
+              }}
             />
           </Suspense>
 

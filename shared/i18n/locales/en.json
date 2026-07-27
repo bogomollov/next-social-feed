@@ -72,6 +72,15 @@
     "memberCard": {
       "primaryCta": "Create account",
       "secondaryCta": "Sign in"
+    },
+    "composer": {
+      "placeholder": "What's on your mind?",
+      "submit": "Post",
+      "errors": {
+        "empty": "Write something before posting.",
+        "too_long": "Keep your post under 500 characters.",
+        "unauthorized": "Sign in to post."
+      }
     }
   },
   "LoginPage": {

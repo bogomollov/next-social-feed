@@ -10,6 +10,7 @@ import {
 } from "@/shared/ui/card";
 import { SectionHeader } from "@/shared/ui/page-shell";
 import { FeedInteractionBar } from "./feed-interaction-bar";
+import { PostComposer } from "./post-composer";
 
 export type FeedSectionsProps = {
   posts: FeedPost[];
@@ -18,6 +19,14 @@ export type FeedSectionsProps = {
   followLabel: string;
   registerLabel: string;
   isAuthorized: boolean;
+  authorName: string;
+  composerPlaceholder: string;
+  composerSubmitLabel: string;
+  composerErrors: {
+    empty: string;
+    too_long: string;
+    unauthorized: string;
+  };
 };
 
 function getInitials(value: string) {
@@ -36,9 +45,22 @@ export function FeedSections({
   followLabel,
   registerLabel,
   isAuthorized,
+  authorName,
+  composerPlaceholder,
+  composerSubmitLabel,
+  composerErrors,
 }: FeedSectionsProps) {
   return (
     <div className="flex flex-col gap-6">
+      {isAuthorized ? (
+        <PostComposer
+          authorName={authorName}
+          placeholder={composerPlaceholder}
+          submitLabel={composerSubmitLabel}
+          errorMessages={composerErrors}
+        />
+      ) : null}
+
       <section className="section-shell">
         <SectionHeader title={streamTitle} description={streamDescription} />
         <div className="feed-grid">
