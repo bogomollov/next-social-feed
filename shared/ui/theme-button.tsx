@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 export function ModeToggle() {
   const t = useTranslations("ThemeToggle");
@@ -23,11 +24,11 @@ export function ModeToggle() {
     () => false,
   );
 
-  const activeTheme = mounted
-    ? theme === "system"
-      ? resolvedTheme
-      : theme ?? "light"
-    : "light";
+  if (!mounted) {
+    return <Skeleton className="h-8 w-24 rounded-md" />;
+  }
+
+  const activeTheme = theme === "system" ? resolvedTheme : (theme ?? "light");
   const TriggerIcon = activeTheme === "dark" ? IconMoon : IconSun;
   const themes = [
     {
