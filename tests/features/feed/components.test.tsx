@@ -79,35 +79,20 @@ describe("feed components", () => {
     expect(screen.queryByRole("link", { name: /register to follow/i })).not.toBeInTheDocument();
   });
 
-  it("renders feed summaries and post cards", () => {
+  it("renders post cards", () => {
     render(
       <FeedSections
         posts={posts}
         streamTitle="Main stream"
         streamDescription="Description"
-        pulseTitle="Feed pulse"
-        pulseDescription="Pulse description"
-        searchEyebrow="Search"
         followLabel="Follow"
         registerLabel="Register to follow"
-        summaryLabels={{
-          posts: "Posts",
-          authors: "Authors",
-          likes: "Likes",
-          comments: "Comments",
-          reposts: "Reposts",
-        }}
         isAuthorized={false}
       />,
     );
 
-    expect(screen.getByText("Feed pulse")).toBeInTheDocument();
     expect(screen.getByText("Main stream")).toBeInTheDocument();
     expect(screen.getAllByText("Maya Torres")).toHaveLength(2);
     expect(screen.getByText("The strongest feed layouts put identity and intent first.")).toBeInTheDocument();
-    expect(screen.getByText("Posts")).toBeInTheDocument();
-    expect(screen.getByText("Authors")).toBeInTheDocument();
-    expect(screen.getByText("Likes")).toBeInTheDocument();
-    expect(screen.getByText("Comments")).toBeInTheDocument();
   });
 });

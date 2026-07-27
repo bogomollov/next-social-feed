@@ -3,6 +3,7 @@ import {
   IconBookmark,
   IconChevronRight,
   IconSearch,
+  IconSparkles,
   IconUserCircle,
   IconUsers,
 } from "@tabler/icons-react";
@@ -275,6 +276,103 @@ async function SessionMemberCard({
   );
 }
 
+function FeedSummaryCardFallback({
+  title,
+  description,
+  eyebrow,
+}: {
+  title: string;
+  description: string;
+  eyebrow: string;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <Badge variant="subtle" className="w-fit gap-1.5">
+          <IconSparkles size={14} />
+          {eyebrow}
+        </Badge>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="surface-subtle p-4 text-sm text-muted-foreground">
+          Loading feed summary...
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function FeedSummaryCard({
+  postsPromise,
+  title,
+  description,
+  eyebrow,
+  summaryLabels,
+}: {
+  postsPromise: Promise<FeedPost[]>;
+  title: string;
+  description: string;
+  eyebrow: string;
+  summaryLabels: {
+    posts: string;
+    authors: string;
+    likes: string;
+    comments: string;
+    reposts: string;
+  };
+}) {
+  const posts = await postsPromise;
+
+  const summaryItems = [
+    { value: posts.length, label: summaryLabels.posts },
+    {
+      value: new Set(posts.map((post) => post.handle)).size,
+      label: summaryLabels.authors,
+    },
+    {
+      value: posts.reduce((sum, post) => sum + post.likes, 0),
+      label: summaryLabels.likes,
+    },
+    {
+      value: posts.reduce((sum, post) => sum + post.comments, 0),
+      label: summaryLabels.comments,
+    },
+    {
+      value: posts.reduce((sum, post) => sum + post.reposts, 0),
+      label: summaryLabels.reposts,
+    },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <Badge variant="subtle" className="w-fit gap-1.5">
+          <IconSparkles size={14} />
+          {eyebrow}
+        </Badge>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+          {summaryItems.map((item) => (
+            <div key={item.label} className="surface-subtle p-4">
+              <p className="text-2xl font-semibold tracking-tight text-foreground">
+                {item.value}
+              </p>
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                {item.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function AuthorsCardFallback({
   title,
   description,
@@ -454,22 +552,35 @@ export default async function FeedPage({ params }: PageProps) {
               postsPromise={postsPromise}
               streamTitle={t("streamTitle")}
               streamDescription={t("streamDescription")}
-              pulseTitle={t("pulseTitle")}
-              pulseDescription={t("pulseDescription")}
-              searchEyebrow={t("searchEyebrow")}
               followLabel={t("actions.follow")}
               registerLabel={t("actions.register")}
-              summaryLabels={{
-                posts: t("summary.posts"),
-                authors: t("summary.authors"),
-                likes: t("summary.likes"),
-                comments: t("summary.comments"),
-                reposts: t("summary.reposts"),
-              }}
             />
           </Suspense>
 
           <aside className="flex flex-col gap-6">
+            <Suspense
+              fallback={
+                <FeedSummaryCardFallback
+                  title={t("pulseTitle")}
+                  description={t("pulseDescription")}
+                  eyebrow={t("searchEyebrow")}
+                />
+              }
+            >
+              <FeedSummaryCard
+                postsPromise={postsPromise}
+                title={t("pulseTitle")}
+                description={t("pulseDescription")}
+                eyebrow={t("searchEyebrow")}
+                summaryLabels={{
+                  posts: t("summary.posts"),
+                  authors: t("summary.authors"),
+                  likes: t("summary.likes"),
+                  comments: t("summary.comments"),
+                  reposts: t("summary.reposts"),
+                }}
+              />
+            </Suspense>
 
             <Suspense
               fallback={
@@ -487,7 +598,6 @@ export default async function FeedPage({ params }: PageProps) {
                 saveAuthorAria={t("labels.saveAuthorAria")}
               />
             </Suspense>
-
           </aside>
         </div>
       </PageBody>
