@@ -82,6 +82,18 @@
         "too_long": "Keep your post under 500 characters.",
         "unauthorized": "Sign in to post."
       }
+    },
+    "comments": {
+      "placeholder": "Write a comment...",
+      "submit": "Comment",
+      "empty": "No comments yet.",
+      "toggleAria": "Toggle comments",
+      "errors": {
+        "empty": "Write something before commenting.",
+        "too_long": "Keep your comment under 500 characters.",
+        "unauthorized": "Sign in to comment.",
+        "load_failed": "Unable to load comments."
+      }
     }
   },
   "LoginPage": {
