@@ -5,13 +5,18 @@ import { updateTag } from "next/cache";
 import { getOptionalSession } from "@/server/auth/session";
 import { db } from "@/server/db/client";
 import { post, postComment } from "@/server/db/schema";
+import { checkRateLimit } from "@/server/lib/rate-limit";
 import type { PostCommentDTO } from "./comments";
 
 const MAX_CONTENT_LENGTH = 500;
+const RATE_LIMIT = { limit: 10, windowSeconds: 60 };
 
 export type CreateCommentResult =
   | { status: "success"; comment: PostCommentDTO }
-  | { status: "error"; error: "empty" | "too_long" | "unauthorized" };
+  | {
+      status: "error";
+      error: "empty" | "too_long" | "unauthorized" | "rate_limited";
+    };
 
 export async function createComment(
   postId: string,
@@ -21,6 +26,15 @@ export async function createComment(
 
   if (!session?.user) {
     return { status: "error", error: "unauthorized" };
+  }
+
+  const rateLimit = await checkRateLimit(
+    `create-comment:${session.user.id}`,
+    RATE_LIMIT,
+  );
+
+  if (!rateLimit.allowed) {
+    return { status: "error", error: "rate_limited" };
   }
 
   const trimmed = content.trim();

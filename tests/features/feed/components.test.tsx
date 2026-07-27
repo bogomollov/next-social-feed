@@ -49,6 +49,7 @@ const composerProps = {
     empty: "Write something before posting.",
     too_long: "Keep your post under 500 characters.",
     unauthorized: "Sign in to post.",
+    rate_limited: "You're posting too fast. Try again in a minute.",
   },
 };
 
@@ -62,6 +63,7 @@ const commentsLabels = {
     empty: "Write something before commenting.",
     too_long: "Keep your comment under 500 characters.",
     unauthorized: "Sign in to comment.",
+    rate_limited: "You're commenting too fast. Try again in a minute.",
   },
 };
 
@@ -74,6 +76,7 @@ const repostLabels = {
     too_long: "Keep your comment under 500 characters.",
     unauthorized: "Sign in to repost.",
     not_found: "This post no longer exists.",
+    rate_limited: "You're reposting too fast. Try again in a minute.",
   },
 };
 

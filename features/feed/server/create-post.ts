@@ -4,16 +4,21 @@ import { updateTag } from "next/cache";
 import { getOptionalSession } from "@/server/auth/session";
 import { db } from "@/server/db/client";
 import { post } from "@/server/db/schema";
+import { checkRateLimit } from "@/server/lib/rate-limit";
 
 const MAX_CONTENT_LENGTH = 500;
 const MAX_TOPIC_LENGTH = 60;
 const FALLBACK_TOPIC = "General";
 const DEFAULT_ROLE = "Member";
+const RATE_LIMIT = { limit: 5, windowSeconds: 60 };
 
 export type CreatePostState =
   | { status: "idle" }
   | { status: "success" }
-  | { status: "error"; error: "empty" | "too_long" | "unauthorized" };
+  | {
+      status: "error";
+      error: "empty" | "too_long" | "unauthorized" | "rate_limited";
+    };
 
 export async function createPost(
   _prevState: CreatePostState,
@@ -23,6 +28,15 @@ export async function createPost(
 
   if (!session?.user) {
     return { status: "error", error: "unauthorized" };
+  }
+
+  const rateLimit = await checkRateLimit(
+    `create-post:${session.user.id}`,
+    RATE_LIMIT,
+  );
+
+  if (!rateLimit.allowed) {
+    return { status: "error", error: "rate_limited" };
   }
 
   const content = String(formData.get("content") ?? "").trim();

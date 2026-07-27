@@ -5,14 +5,19 @@ import { updateTag } from "next/cache";
 import { getOptionalSession } from "@/server/auth/session";
 import { db } from "@/server/db/client";
 import { post } from "@/server/db/schema";
+import { checkRateLimit } from "@/server/lib/rate-limit";
 
 const MAX_CONTENT_LENGTH = 500;
 const DEFAULT_ROLE = "Member";
+const RATE_LIMIT = { limit: 5, windowSeconds: 60 };
 
 export type CreateRepostState =
   | { status: "idle" }
   | { status: "success" }
-  | { status: "error"; error: "too_long" | "unauthorized" | "not_found" };
+  | {
+      status: "error";
+      error: "too_long" | "unauthorized" | "not_found" | "rate_limited";
+    };
 
 export async function createRepost(
   postId: string,
@@ -23,6 +28,15 @@ export async function createRepost(
 
   if (!session?.user) {
     return { status: "error", error: "unauthorized" };
+  }
+
+  const rateLimit = await checkRateLimit(
+    `create-repost:${session.user.id}`,
+    RATE_LIMIT,
+  );
+
+  if (!rateLimit.allowed) {
+    return { status: "error", error: "rate_limited" };
   }
 
   const content = String(formData.get("content") ?? "").trim();

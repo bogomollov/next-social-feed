@@ -80,7 +80,8 @@
       "errors": {
         "empty": "Write something before posting.",
         "too_long": "Keep your post under 500 characters.",
-        "unauthorized": "Sign in to post."
+        "unauthorized": "Sign in to post.",
+        "rate_limited": "You're posting too fast. Try again in a minute."
       }
     },
     "comments": {
@@ -92,7 +93,8 @@
         "empty": "Write something before commenting.",
         "too_long": "Keep your comment under 500 characters.",
         "unauthorized": "Sign in to comment.",
-        "load_failed": "Unable to load comments."
+        "load_failed": "Unable to load comments.",
+        "rate_limited": "You're commenting too fast. Try again in a minute."
       }
     },
     "repost": {
@@ -103,7 +105,8 @@
       "errors": {
         "too_long": "Keep your comment under 500 characters.",
         "unauthorized": "Sign in to repost.",
-        "not_found": "This post no longer exists."
+        "not_found": "This post no longer exists.",
+        "rate_limited": "You're reposting too fast. Try again in a minute."
       }
     }
   },

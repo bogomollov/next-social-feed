@@ -25,6 +25,7 @@ type CommentsLabels = {
     empty: string;
     too_long: string;
     unauthorized: string;
+    rate_limited: string;
   };
 };
 
@@ -37,6 +38,7 @@ type RepostLabels = {
     too_long: string;
     unauthorized: string;
     not_found: string;
+    rate_limited: string;
   };
 };
 

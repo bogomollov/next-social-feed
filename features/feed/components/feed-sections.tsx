@@ -29,6 +29,7 @@ export type FeedSectionsProps = {
     empty: string;
     too_long: string;
     unauthorized: string;
+    rate_limited: string;
   };
   commentsLabels: {
     placeholder: string;
@@ -40,6 +41,7 @@ export type FeedSectionsProps = {
       empty: string;
       too_long: string;
       unauthorized: string;
+      rate_limited: string;
     };
   };
   repostLabels: {
@@ -51,6 +53,7 @@ export type FeedSectionsProps = {
       too_long: string;
       unauthorized: string;
       not_found: string;
+      rate_limited: string;
     };
   };
 };

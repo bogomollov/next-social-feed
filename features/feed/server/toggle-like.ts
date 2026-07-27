@@ -5,10 +5,13 @@ import { updateTag } from "next/cache";
 import { getOptionalSession } from "@/server/auth/session";
 import { db } from "@/server/db/client";
 import { post, postLike } from "@/server/db/schema";
+import { checkRateLimit } from "@/server/lib/rate-limit";
+
+const RATE_LIMIT = { limit: 30, windowSeconds: 60 };
 
 export type ToggleLikeResult =
   | { status: "success"; liked: boolean }
-  | { status: "error"; error: "unauthorized" };
+  | { status: "error"; error: "unauthorized" | "rate_limited" };
 
 export async function toggleLike(postId: string): Promise<ToggleLikeResult> {
   const session = await getOptionalSession();
@@ -18,6 +21,12 @@ export async function toggleLike(postId: string): Promise<ToggleLikeResult> {
   }
 
   const userId = session.user.id;
+
+  const rateLimit = await checkRateLimit(`toggle-like:${userId}`, RATE_LIMIT);
+
+  if (!rateLimit.allowed) {
+    return { status: "error", error: "rate_limited" };
+  }
 
   const removed = await db
     .delete(postLike)

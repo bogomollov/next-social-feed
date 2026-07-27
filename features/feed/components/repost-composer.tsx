@@ -24,6 +24,7 @@ type RepostComposerProps = {
     too_long: string;
     unauthorized: string;
     not_found: string;
+    rate_limited: string;
   };
   onSuccess?: () => void;
 };

@@ -20,6 +20,7 @@ type PostCommentsProps = {
     empty: string;
     too_long: string;
     unauthorized: string;
+    rate_limited: string;
   };
   onCommentAdded?: () => void;
 };

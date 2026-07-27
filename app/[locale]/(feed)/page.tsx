@@ -584,6 +584,7 @@ export default async function FeedPage({ params }: PageProps) {
                 empty: t("composer.errors.empty"),
                 too_long: t("composer.errors.too_long"),
                 unauthorized: t("composer.errors.unauthorized"),
+                rate_limited: t("composer.errors.rate_limited"),
               }}
               commentsLabels={{
                 placeholder: t("comments.placeholder"),
@@ -595,6 +596,7 @@ export default async function FeedPage({ params }: PageProps) {
                   empty: t("comments.errors.empty"),
                   too_long: t("comments.errors.too_long"),
                   unauthorized: t("comments.errors.unauthorized"),
+                  rate_limited: t("comments.errors.rate_limited"),
                 },
               }}
               repostLabels={{
@@ -606,6 +608,7 @@ export default async function FeedPage({ params }: PageProps) {
                   too_long: t("repost.errors.too_long"),
                   unauthorized: t("repost.errors.unauthorized"),
                   not_found: t("repost.errors.not_found"),
+                  rate_limited: t("repost.errors.rate_limited"),
                 },
               }}
             />
