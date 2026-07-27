@@ -22,6 +22,11 @@ vi.mock("@/features/feed/server/toggle-like", () => ({
   toggleLike: (...args: unknown[]) => mockToggleLike(...args),
 }));
 
+const mockToggleRepost = vi.fn();
+vi.mock("@/features/feed/server/toggle-repost", () => ({
+  toggleRepost: (...args: unknown[]) => mockToggleRepost(...args),
+}));
+
 const mockGetComments = vi.fn();
 vi.mock("@/features/feed/server/comments", () => ({
   getComments: (...args: unknown[]) => mockGetComments(...args),
@@ -95,6 +100,7 @@ const posts = [
 describe("feed components", () => {
   beforeEach(() => {
     mockToggleLike.mockReset();
+    mockToggleRepost.mockReset();
     mockGetComments.mockReset();
     mockCreateComment.mockReset();
     mockGetComments.mockResolvedValue({ status: "success", comments: [] });
@@ -108,6 +114,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized={false}
         isOwnPost={false}
         followLabel="Follow"
@@ -131,6 +138,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -151,6 +159,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost
         followLabel="Follow"
@@ -172,6 +181,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -197,6 +207,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -210,6 +221,59 @@ describe("feed components", () => {
 
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /5/ })).toBeInTheDocument(),
+    );
+  });
+
+  it("optimistically toggles the repost button and calls toggleRepost", async () => {
+    mockToggleRepost.mockResolvedValue({ status: "success", reposted: true });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        reposted={false}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    const repostButton = screen.getByRole("button", { name: /^1$/ });
+    fireEvent.click(repostButton);
+
+    expect(screen.getByRole("button", { name: /^2$/ })).toBeInTheDocument();
+    await waitFor(() => expect(mockToggleRepost).toHaveBeenCalledWith("post-1"));
+  });
+
+  it("reverts the repost toggle when the server action fails", async () => {
+    mockToggleRepost.mockResolvedValue({ status: "error", error: "unauthorized" });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        reposted={false}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^1$/ }));
+    expect(screen.getByRole("button", { name: /^2$/ })).toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /^1$/ })).toBeInTheDocument(),
     );
   });
 
@@ -234,6 +298,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -270,6 +335,7 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
+        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -308,6 +374,7 @@ describe("feed components", () => {
         isAuthorized={false}
         currentUserHandle={null}
         likedPostIds={new Set()}
+        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
         {...composerProps}
       />,
@@ -332,6 +399,7 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle={null}
         likedPostIds={new Set()}
+        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
         {...composerProps}
       />,
@@ -354,6 +422,7 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle="@maya"
         likedPostIds={new Set()}
+        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
         {...composerProps}
       />,
