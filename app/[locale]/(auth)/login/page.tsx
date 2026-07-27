@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/features/auth/components/auth-shell";
+import { CenteredAuthCard } from "@/features/auth/components/centered-auth-card";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { redirectIfAuthenticated } from "@/server/auth/session";
 
@@ -13,13 +13,12 @@ export default async function LoginPage({
   const t = await getTranslations({ locale, namespace: "LoginPage" });
 
   return (
-    <AuthShell
-      locale={locale}
+    <CenteredAuthCard
       badge={t("badge")}
       title={t("title")}
       description={t("description")}
     >
       <LoginForm />
-    </AuthShell>
+    </CenteredAuthCard>
   );
 }
