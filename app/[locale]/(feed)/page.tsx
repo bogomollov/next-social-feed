@@ -348,10 +348,6 @@ async function FeedSummaryCard({
   return (
     <Card>
       <CardHeader>
-        <Badge variant="subtle" className="w-fit gap-1.5">
-          <IconSparkles size={14} />
-          {eyebrow}
-        </Badge>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
