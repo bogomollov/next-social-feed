@@ -76,6 +76,7 @@ export const auth = betterAuth({
   account: {
     storeStateStrategy: "cookie",
     storeAccountCookie: true,
+    encryptOAuthTokens: true,
   },
   ...(redis
     ? {
