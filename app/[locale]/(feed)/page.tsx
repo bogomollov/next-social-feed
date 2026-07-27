@@ -113,14 +113,8 @@ function GuestActions({
   );
 }
 
-function SessionBadgeFallback({
-  loginLabel,
-  registerLabel,
-}: {
-  loginLabel: string;
-  registerLabel: string;
-}) {
-  return <GuestActions loginLabel={loginLabel} registerLabel={registerLabel} />;
+function SessionBadgeFallback() {
+  return <Skeleton className="h-8 w-24 rounded-md" />;
 }
 
 async function SessionBadge({
@@ -532,14 +526,7 @@ export default async function FeedPage({ params }: PageProps) {
           description={`${t("description")} ${t("heroHint")}`}
           actions={
             <>
-              <Suspense
-                fallback={
-                  <SessionBadgeFallback
-                    loginLabel={t("memberCard.secondaryCta")}
-                    registerLabel={t("memberCard.primaryCta")}
-                  />
-                }
-              >
+              <Suspense fallback={<SessionBadgeFallback />}>
                 <SessionBadge
                   fallbackName={t("profile.fallbackName")}
                   loginLabel={t("memberCard.secondaryCta")}
