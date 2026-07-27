@@ -21,6 +21,7 @@ export type FeedSectionsProps = {
   isAuthorized: boolean;
   currentUserHandle: string | null;
   likedPostIds: Set<string>;
+  repostedPostIds: Set<string>;
   authorName: string;
   composerPlaceholder: string;
   composerSubmitLabel: string;
@@ -73,6 +74,7 @@ export function FeedSections({
   isAuthorized,
   currentUserHandle,
   likedPostIds,
+  repostedPostIds,
   authorName,
   composerPlaceholder,
   composerSubmitLabel,
@@ -131,6 +133,7 @@ export function FeedSections({
                   likes={post.likes}
                   liked={likedPostIds.has(post.id)}
                   reposts={post.reposts}
+                  reposted={repostedPostIds.has(post.id)}
                   isAuthorized={isAuthorized}
                   isOwnPost={post.handle === currentUserHandle}
                   followLabel={followLabel}

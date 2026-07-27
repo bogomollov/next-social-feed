@@ -9,6 +9,7 @@ import {
   IconUserPlus,
 } from "@tabler/icons-react";
 import { toggleLike } from "@/features/feed/server/toggle-like";
+import { toggleRepost } from "@/features/feed/server/toggle-repost";
 import { Link } from "@/shared/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -33,6 +34,7 @@ type FeedInteractionBarProps = {
   likes: number;
   liked: boolean;
   reposts: number;
+  reposted: boolean;
   isAuthorized: boolean;
   isOwnPost: boolean;
   followLabel: string;
@@ -47,6 +49,7 @@ export function FeedInteractionBar({
   likes,
   liked,
   reposts,
+  reposted,
   isAuthorized,
   isOwnPost,
   followLabel,
@@ -55,6 +58,10 @@ export function FeedInteractionBar({
   commentsLabels,
 }: FeedInteractionBarProps) {
   const [likeState, setLikeState] = useState({ liked, count: likes });
+  const [repostState, setRepostState] = useState({
+    reposted,
+    count: reposts,
+  });
   const [commentCount, setCommentCount] = useState(comments);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -77,6 +84,27 @@ export function FeedInteractionBar({
       }
 
       setLikeState((current) => ({ ...current, liked: result.liked }));
+    });
+  };
+
+  const handleToggleRepost = () => {
+    const previous = repostState;
+    const optimisticReposted = !previous.reposted;
+
+    setRepostState({
+      reposted: optimisticReposted,
+      count: previous.count + (optimisticReposted ? 1 : -1),
+    });
+
+    startTransition(async () => {
+      const result = await toggleRepost(postId);
+
+      if (result.status === "error") {
+        setRepostState(previous);
+        return;
+      }
+
+      setRepostState((current) => ({ ...current, reposted: result.reposted }));
     });
   };
 
@@ -143,9 +171,18 @@ export function FeedInteractionBar({
             <IconMessageCircle data-icon="inline-start" />
             {commentCount}
           </Button>
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isPending}
+            aria-pressed={repostState.reposted}
+            onClick={handleToggleRepost}
+            className={cn(
+              repostState.reposted && "border-primary/40 text-primary",
+            )}
+          >
             <IconRepeat data-icon="inline-start" />
-            {reposts}
+            {repostState.count}
           </Button>
         </div>
         {isOwnPost ? null : (

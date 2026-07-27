@@ -15,6 +15,7 @@ import {
 import { FeedSectionsSkeleton } from "@/features/feed/components/feed-sections-skeleton";
 import { getLikedPostIds } from "@/features/feed/server/likes";
 import { getFeedPosts, type FeedPost } from "@/features/feed/server/posts";
+import { getRepostedPostIds } from "@/features/feed/server/reposts";
 import { getOptionalSession } from "@/server/auth/session";
 import { Link } from "@/shared/i18n/navigation";
 import { routing } from "@/shared/i18n/routing";
@@ -149,7 +150,12 @@ async function FeedSectionsWithSession({
   ...props
 }: Omit<
   FeedSectionsProps,
-  "posts" | "isAuthorized" | "currentUserHandle" | "likedPostIds" | "authorName"
+  | "posts"
+  | "isAuthorized"
+  | "currentUserHandle"
+  | "likedPostIds"
+  | "repostedPostIds"
+  | "authorName"
 > & {
   fallbackName: string;
   postsPromise: Promise<FeedPost[]>;
@@ -159,12 +165,14 @@ async function FeedSectionsWithSession({
     postsPromise,
   ]);
 
-  const likedPostIds = currentUser
-    ? await getLikedPostIds(
-        currentUser.id,
-        posts.map((post) => post.id),
-      )
-    : new Set<string>();
+  const postIds = posts.map((post) => post.id);
+
+  const [likedPostIds, repostedPostIds] = currentUser
+    ? await Promise.all([
+        getLikedPostIds(currentUser.id, postIds),
+        getRepostedPostIds(currentUser.id, postIds),
+      ])
+    : [new Set<string>(), new Set<string>()];
 
   return (
     <FeedSections
@@ -173,6 +181,7 @@ async function FeedSectionsWithSession({
       isAuthorized={Boolean(currentUser)}
       currentUserHandle={currentUser ? `@${currentUser.username}` : null}
       likedPostIds={likedPostIds}
+      repostedPostIds={repostedPostIds}
       authorName={currentUser?.displayName ?? fallbackName}
     />
   );
