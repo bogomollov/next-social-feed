@@ -94,6 +94,17 @@
         "unauthorized": "Sign in to comment.",
         "load_failed": "Unable to load comments."
       }
+    },
+    "repost": {
+      "placeholder": "Add a comment (optional)",
+      "submit": "Repost",
+      "toggleAria": "Toggle repost composer",
+      "quotedFrom": "Reposted from",
+      "errors": {
+        "too_long": "Keep your comment under 500 characters.",
+        "unauthorized": "Sign in to repost.",
+        "not_found": "This post no longer exists."
+      }
     }
   },
   "LoginPage": {

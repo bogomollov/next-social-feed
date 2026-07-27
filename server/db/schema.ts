@@ -1,4 +1,5 @@
 import {
+  type AnyPgColumn,
   boolean,
   index,
   integer,
@@ -110,6 +111,13 @@ export const post = pgTable(
     likes: integer("likes").default(0).notNull(),
     comments: integer("comments").default(0).notNull(),
     reposts: integer("reposts").default(0).notNull(),
+    repostOfId: uuid("repost_of_id").references(
+      (): AnyPgColumn => post.id,
+      { onDelete: "set null" },
+    ),
+    repostOfAuthorName: varchar("repost_of_author_name", { length: 255 }),
+    repostOfAuthorHandle: varchar("repost_of_author_handle", { length: 255 }),
+    repostOfContent: text("repost_of_content"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -117,6 +125,7 @@ export const post = pgTable(
     slugUnique: uniqueIndex("post_slug_unique").on(table.slug),
     authorIdIdx: index("post_author_id_idx").on(table.authorId),
     createdAtIdx: index("post_created_at_idx").on(table.createdAt),
+    repostOfIdIdx: index("post_repost_of_id_idx").on(table.repostOfId),
   }),
 );
 

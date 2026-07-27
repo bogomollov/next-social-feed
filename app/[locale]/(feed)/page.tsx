@@ -597,6 +597,17 @@ export default async function FeedPage({ params }: PageProps) {
                   unauthorized: t("comments.errors.unauthorized"),
                 },
               }}
+              repostLabels={{
+                placeholder: t("repost.placeholder"),
+                submit: t("repost.submit"),
+                toggleAria: t("repost.toggleAria"),
+                quotedFrom: t("repost.quotedFrom"),
+                errors: {
+                  too_long: t("repost.errors.too_long"),
+                  unauthorized: t("repost.errors.unauthorized"),
+                  not_found: t("repost.errors.not_found"),
+                },
+              }}
             />
           </Suspense>
 

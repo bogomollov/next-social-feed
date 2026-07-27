@@ -22,6 +22,11 @@ vi.mock("@/features/feed/server/toggle-like", () => ({
   toggleLike: (...args: unknown[]) => mockToggleLike(...args),
 }));
 
+const mockCreateRepost = vi.fn();
+vi.mock("@/features/feed/server/create-repost", () => ({
+  createRepost: (...args: unknown[]) => mockCreateRepost(...args),
+}));
+
 const mockGetComments = vi.fn();
 vi.mock("@/features/feed/server/comments", () => ({
   getComments: (...args: unknown[]) => mockGetComments(...args),
@@ -60,9 +65,25 @@ const commentsLabels = {
   },
 };
 
+const repostLabels = {
+  placeholder: "Add a comment (optional)",
+  submit: "Repost",
+  toggleAria: "Toggle repost composer",
+  quotedFrom: "Reposted from",
+  errors: {
+    too_long: "Keep your comment under 500 characters.",
+    unauthorized: "Sign in to repost.",
+    not_found: "This post no longer exists.",
+  },
+};
+
 const interactionBarProps = {
+  postAuthor: "Maya Torres",
+  postHandle: "@maya",
+  postContent: "The strongest feed layouts put identity and intent first.",
   authorName: "Maya Torres",
   commentsLabels,
+  repostLabels,
 };
 
 const posts = [
@@ -77,6 +98,7 @@ const posts = [
     likes: 5,
     comments: 2,
     reposts: 1,
+    repostOf: null,
   },
   {
     id: "post-2",
@@ -89,12 +111,14 @@ const posts = [
     likes: 7,
     comments: 1,
     reposts: 0,
+    repostOf: null,
   },
 ];
 
 describe("feed components", () => {
   beforeEach(() => {
     mockToggleLike.mockReset();
+    mockCreateRepost.mockReset();
     mockGetComments.mockReset();
     mockCreateComment.mockReset();
     mockGetComments.mockResolvedValue({ status: "success", comments: [] });
@@ -213,6 +237,80 @@ describe("feed components", () => {
     );
   });
 
+  it("opens the repost composer with a quoted preview of the original post", () => {
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
+
+    expect(screen.getByText(/reposted from maya torres/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The strongest feed layouts put identity and intent first.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
+    expect(
+      screen.queryByText(/reposted from maya torres/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("submits a repost with the user's comment and calls createRepost", async () => {
+    mockCreateRepost.mockResolvedValue({ status: "success" });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        {...interactionBarProps}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
+
+    const textbox = screen.getByPlaceholderText("Add a comment (optional)");
+    fireEvent.change(textbox, { target: { value: "Couldn't agree more!" } });
+    fireEvent.click(screen.getByRole("button", { name: "Repost" }));
+
+    await waitFor(() => expect(mockCreateRepost).toHaveBeenCalled());
+
+    const [postIdArg, , formDataArg] = mockCreateRepost.mock.calls[0];
+    expect(postIdArg).toBe("post-1");
+    expect(formDataArg.get("content")).toBe("Couldn't agree more!");
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: /toggle repost composer/i }),
+      ).toHaveTextContent("2"),
+    );
+  });
+
   it("loads and shows comments when the comments button is toggled", async () => {
     mockGetComments.mockResolvedValue({
       status: "success",
@@ -309,6 +407,7 @@ describe("feed components", () => {
         currentUserHandle={null}
         likedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );
@@ -319,6 +418,51 @@ describe("feed components", () => {
     expect(
       screen.queryByPlaceholderText("What's on your mind?"),
     ).not.toBeInTheDocument();
+  });
+
+  it("shows the quoted original post for a repost", () => {
+    render(
+      <FeedSections
+        posts={[
+          {
+            id: "post-3",
+            author: "Jordan Lee",
+            handle: "@jordan",
+            role: "Product engineer",
+            time: "3 minutes ago",
+            topic: "Build in public",
+            content: "Couldn't agree more!",
+            likes: 0,
+            comments: 0,
+            reposts: 0,
+            repostOf: {
+              author: "Maya Torres",
+              handle: "@maya",
+              content:
+                "The strongest feed layouts put identity and intent first.",
+            },
+          },
+        ]}
+        streamTitle="Main stream"
+        streamDescription="Description"
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        isAuthorized={false}
+        currentUserHandle={null}
+        likedPostIds={new Set()}
+        commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
+        {...composerProps}
+      />,
+    );
+
+    expect(screen.getByText("Couldn't agree more!")).toBeInTheDocument();
+    expect(screen.getByText(/reposted from maya torres/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The strongest feed layouts put identity and intent first.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows the post composer only for authorized users", () => {
@@ -333,6 +477,7 @@ describe("feed components", () => {
         currentUserHandle={null}
         likedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );
@@ -355,6 +500,7 @@ describe("feed components", () => {
         currentUserHandle="@maya"
         likedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );

@@ -13,6 +13,7 @@ import { Link } from "@/shared/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { PostComments } from "./post-comments";
+import { RepostComposer } from "./repost-composer";
 
 type CommentsLabels = {
   placeholder: string;
@@ -27,8 +28,23 @@ type CommentsLabels = {
   };
 };
 
+type RepostLabels = {
+  placeholder: string;
+  submit: string;
+  toggleAria: string;
+  quotedFrom: string;
+  errors: {
+    too_long: string;
+    unauthorized: string;
+    not_found: string;
+  };
+};
+
 type FeedInteractionBarProps = {
   postId: string;
+  postAuthor: string;
+  postHandle: string;
+  postContent: string;
   comments: number;
   likes: number;
   liked: boolean;
@@ -39,10 +55,14 @@ type FeedInteractionBarProps = {
   registerLabel: string;
   authorName: string;
   commentsLabels: CommentsLabels;
+  repostLabels: RepostLabels;
 };
 
 export function FeedInteractionBar({
   postId,
+  postAuthor,
+  postHandle,
+  postContent,
   comments,
   likes,
   liked,
@@ -53,10 +73,13 @@ export function FeedInteractionBar({
   registerLabel,
   authorName,
   commentsLabels,
+  repostLabels,
 }: FeedInteractionBarProps) {
   const [likeState, setLikeState] = useState({ liked, count: likes });
+  const [repostCount, setRepostCount] = useState(reposts);
   const [commentCount, setCommentCount] = useState(comments);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [repostOpen, setRepostOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleToggleLike = () => {
@@ -143,9 +166,16 @@ export function FeedInteractionBar({
             <IconMessageCircle data-icon="inline-start" />
             {commentCount}
           </Button>
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            aria-pressed={repostOpen}
+            aria-label={repostLabels.toggleAria}
+            onClick={() => setRepostOpen((current) => !current)}
+            className={cn(repostOpen && "border-primary/40 text-primary")}
+          >
             <IconRepeat data-icon="inline-start" />
-            {reposts}
+            {repostCount}
           </Button>
         </div>
         {isOwnPost ? null : (
@@ -165,6 +195,22 @@ export function FeedInteractionBar({
           loadErrorLabel={commentsLabels.loadError}
           errorMessages={commentsLabels.errors}
           onCommentAdded={() => setCommentCount((count) => count + 1)}
+        />
+      ) : null}
+      {repostOpen ? (
+        <RepostComposer
+          postId={postId}
+          quotedFromLabel={repostLabels.quotedFrom}
+          quotedAuthor={postAuthor}
+          quotedHandle={postHandle}
+          quotedContent={postContent}
+          placeholder={repostLabels.placeholder}
+          submitLabel={repostLabels.submit}
+          errorMessages={repostLabels.errors}
+          onSuccess={() => {
+            setRepostCount((count) => count + 1);
+            setRepostOpen(false);
+          }}
         />
       ) : null}
     </div>
