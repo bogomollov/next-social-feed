@@ -31,7 +31,16 @@ export type FeedSectionsProps = {
   };
 };
 
-const FALLBACK_TOPICS = ["Update", "Announcement", "Question", "Idea"];
+const COMPOSER_TOPICS = [
+  "General",
+  "Announcement",
+  "Question",
+  "Idea",
+  "Discussion",
+  "Milestone",
+  "Feedback",
+  "Show and tell",
+];
 
 function getInitials(value: string) {
   return value
@@ -56,7 +65,9 @@ export function FeedSections({
   composerTopicPlaceholder,
   composerErrors,
 }: FeedSectionsProps) {
-  const topics = Array.from(new Set(posts.map((post) => post.topic)));
+  const topics = Array.from(
+    new Set([...COMPOSER_TOPICS, ...posts.map((post) => post.topic)]),
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -66,7 +77,7 @@ export function FeedSections({
           placeholder={composerPlaceholder}
           submitLabel={composerSubmitLabel}
           topicPlaceholder={composerTopicPlaceholder}
-          topics={topics.length > 0 ? topics : FALLBACK_TOPICS}
+          topics={topics}
           errorMessages={composerErrors}
         />
       ) : null}
