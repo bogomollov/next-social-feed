@@ -7,7 +7,7 @@ import { post } from "@/server/db/schema";
 
 const MAX_CONTENT_LENGTH = 500;
 const MAX_TOPIC_LENGTH = 60;
-const FALLBACK_TOPIC = "Update";
+const FALLBACK_TOPIC = "General";
 const DEFAULT_ROLE = "Member";
 
 export type CreatePostState =
