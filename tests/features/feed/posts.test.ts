@@ -32,6 +32,9 @@ vi.mock("@/server/db/schema", () => ({
     likes: "likes",
     comments: "comments",
     reposts: "reposts",
+    repostOfAuthorName: "repostOfAuthorName",
+    repostOfAuthorHandle: "repostOfAuthorHandle",
+    repostOfContent: "repostOfContent",
     createdAt: "createdAt",
   },
 }));
@@ -56,7 +59,25 @@ describe("getFeedPosts", () => {
         likes: 5,
         comments: 2,
         reposts: 1,
+        repostOfAuthorName: null,
+        repostOfAuthorHandle: null,
+        repostOfContent: null,
         createdAt: new Date("2026-04-10T11:59:00.000Z"),
+      },
+      {
+        id: "post-2",
+        author: "Jordan Lee",
+        handle: "@jordan",
+        role: "Product engineer",
+        topic: "Build in public",
+        content: "Couldn't agree more!",
+        likes: 0,
+        comments: 0,
+        reposts: 0,
+        repostOfAuthorName: "Maya Torres",
+        repostOfAuthorHandle: "@maya",
+        repostOfContent: "Hello world",
+        createdAt: new Date("2026-04-10T11:58:00.000Z"),
       },
     ]);
     mockFrom.mockReturnValue({
@@ -92,6 +113,16 @@ describe("getFeedPosts", () => {
         likes: 5,
         comments: 2,
         reposts: 1,
+        repostOf: null,
+      }),
+      expect.objectContaining({
+        id: "post-2",
+        content: "Couldn't agree more!",
+        repostOf: {
+          author: "Maya Torres",
+          handle: "@maya",
+          content: "Hello world",
+        },
       }),
     ]);
     expect(posts[0].time).toContain("minute");

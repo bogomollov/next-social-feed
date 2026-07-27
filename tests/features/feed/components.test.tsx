@@ -22,9 +22,9 @@ vi.mock("@/features/feed/server/toggle-like", () => ({
   toggleLike: (...args: unknown[]) => mockToggleLike(...args),
 }));
 
-const mockToggleRepost = vi.fn();
-vi.mock("@/features/feed/server/toggle-repost", () => ({
-  toggleRepost: (...args: unknown[]) => mockToggleRepost(...args),
+const mockCreateRepost = vi.fn();
+vi.mock("@/features/feed/server/create-repost", () => ({
+  createRepost: (...args: unknown[]) => mockCreateRepost(...args),
 }));
 
 const mockGetComments = vi.fn();
@@ -65,9 +65,25 @@ const commentsLabels = {
   },
 };
 
+const repostLabels = {
+  placeholder: "Add a comment (optional)",
+  submit: "Repost",
+  toggleAria: "Toggle repost composer",
+  quotedFrom: "Reposted from",
+  errors: {
+    too_long: "Keep your comment under 500 characters.",
+    unauthorized: "Sign in to repost.",
+    not_found: "This post no longer exists.",
+  },
+};
+
 const interactionBarProps = {
+  postAuthor: "Maya Torres",
+  postHandle: "@maya",
+  postContent: "The strongest feed layouts put identity and intent first.",
   authorName: "Maya Torres",
   commentsLabels,
+  repostLabels,
 };
 
 const posts = [
@@ -82,6 +98,7 @@ const posts = [
     likes: 5,
     comments: 2,
     reposts: 1,
+    repostOf: null,
   },
   {
     id: "post-2",
@@ -94,13 +111,14 @@ const posts = [
     likes: 7,
     comments: 1,
     reposts: 0,
+    repostOf: null,
   },
 ];
 
 describe("feed components", () => {
   beforeEach(() => {
     mockToggleLike.mockReset();
-    mockToggleRepost.mockReset();
+    mockCreateRepost.mockReset();
     mockGetComments.mockReset();
     mockCreateComment.mockReset();
     mockGetComments.mockResolvedValue({ status: "success", comments: [] });
@@ -114,7 +132,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized={false}
         isOwnPost={false}
         followLabel="Follow"
@@ -138,7 +155,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -159,7 +175,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost
         followLabel="Follow"
@@ -181,7 +196,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -207,7 +221,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -224,9 +237,7 @@ describe("feed components", () => {
     );
   });
 
-  it("optimistically toggles the repost button and calls toggleRepost", async () => {
-    mockToggleRepost.mockResolvedValue({ status: "success", reposted: true });
-
+  it("opens the repost composer with a quoted preview of the original post", () => {
     render(
       <FeedInteractionBar
         postId="post-1"
@@ -234,7 +245,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -243,15 +253,27 @@ describe("feed components", () => {
       />,
     );
 
-    const repostButton = screen.getByRole("button", { name: /^1$/ });
-    fireEvent.click(repostButton);
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
 
-    expect(screen.getByRole("button", { name: /^2$/ })).toBeInTheDocument();
-    await waitFor(() => expect(mockToggleRepost).toHaveBeenCalledWith("post-1"));
+    expect(screen.getByText(/reposted from maya torres/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The strongest feed layouts put identity and intent first.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
+    expect(
+      screen.queryByText(/reposted from maya torres/i),
+    ).not.toBeInTheDocument();
   });
 
-  it("reverts the repost toggle when the server action fails", async () => {
-    mockToggleRepost.mockResolvedValue({ status: "error", error: "unauthorized" });
+  it("submits a repost with the user's comment and calls createRepost", async () => {
+    mockCreateRepost.mockResolvedValue({ status: "success" });
 
     render(
       <FeedInteractionBar
@@ -260,7 +282,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -269,11 +290,24 @@ describe("feed components", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /^1$/ }));
-    expect(screen.getByRole("button", { name: /^2$/ })).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: /toggle repost composer/i }),
+    );
+
+    const textbox = screen.getByPlaceholderText("Add a comment (optional)");
+    fireEvent.change(textbox, { target: { value: "Couldn't agree more!" } });
+    fireEvent.click(screen.getByRole("button", { name: "Repost" }));
+
+    await waitFor(() => expect(mockCreateRepost).toHaveBeenCalled());
+
+    const [postIdArg, , formDataArg] = mockCreateRepost.mock.calls[0];
+    expect(postIdArg).toBe("post-1");
+    expect(formDataArg.get("content")).toBe("Couldn't agree more!");
 
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: /^1$/ })).toBeInTheDocument(),
+      expect(
+        screen.getByRole("button", { name: /toggle repost composer/i }),
+      ).toHaveTextContent("2"),
     );
   });
 
@@ -298,7 +332,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -335,7 +368,6 @@ describe("feed components", () => {
         likes={5}
         liked={false}
         reposts={1}
-        reposted={false}
         isAuthorized
         isOwnPost={false}
         followLabel="Follow"
@@ -374,8 +406,8 @@ describe("feed components", () => {
         isAuthorized={false}
         currentUserHandle={null}
         likedPostIds={new Set()}
-        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );
@@ -386,6 +418,51 @@ describe("feed components", () => {
     expect(
       screen.queryByPlaceholderText("What's on your mind?"),
     ).not.toBeInTheDocument();
+  });
+
+  it("shows the quoted original post for a repost", () => {
+    render(
+      <FeedSections
+        posts={[
+          {
+            id: "post-3",
+            author: "Jordan Lee",
+            handle: "@jordan",
+            role: "Product engineer",
+            time: "3 minutes ago",
+            topic: "Build in public",
+            content: "Couldn't agree more!",
+            likes: 0,
+            comments: 0,
+            reposts: 0,
+            repostOf: {
+              author: "Maya Torres",
+              handle: "@maya",
+              content:
+                "The strongest feed layouts put identity and intent first.",
+            },
+          },
+        ]}
+        streamTitle="Main stream"
+        streamDescription="Description"
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        isAuthorized={false}
+        currentUserHandle={null}
+        likedPostIds={new Set()}
+        commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
+        {...composerProps}
+      />,
+    );
+
+    expect(screen.getByText("Couldn't agree more!")).toBeInTheDocument();
+    expect(screen.getByText(/reposted from maya torres/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The strongest feed layouts put identity and intent first.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows the post composer only for authorized users", () => {
@@ -399,8 +476,8 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle={null}
         likedPostIds={new Set()}
-        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );
@@ -422,8 +499,8 @@ describe("feed components", () => {
         isAuthorized
         currentUserHandle="@maya"
         likedPostIds={new Set()}
-        repostedPostIds={new Set()}
         commentsLabels={commentsLabels}
+        repostLabels={repostLabels}
         {...composerProps}
       />,
     );
