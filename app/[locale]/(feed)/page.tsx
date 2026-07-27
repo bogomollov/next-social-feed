@@ -13,6 +13,7 @@ import {
   type FeedSectionsProps,
 } from "@/features/feed/components/feed-sections";
 import { FeedSectionsSkeleton } from "@/features/feed/components/feed-sections-skeleton";
+import { getLikedPostIds } from "@/features/feed/server/likes";
 import { getFeedPosts, type FeedPost } from "@/features/feed/server/posts";
 import { getOptionalSession } from "@/server/auth/session";
 import { Link } from "@/shared/i18n/navigation";
@@ -37,6 +38,7 @@ type PageProps = {
 };
 
 type CurrentUser = {
+  id: string;
   displayName: string;
   username: string;
 } | null;
@@ -66,6 +68,7 @@ async function getCurrentUser(fallbackName: string): Promise<CurrentUser> {
   }
 
   return {
+    id: session.user.id,
     displayName: session.user.name ?? fallbackName,
     username:
       session.user.username ?? session.user.email?.split("@")[0] ?? "user",
@@ -146,7 +149,7 @@ async function FeedSectionsWithSession({
   ...props
 }: Omit<
   FeedSectionsProps,
-  "posts" | "isAuthorized" | "currentUserHandle" | "authorName"
+  "posts" | "isAuthorized" | "currentUserHandle" | "likedPostIds" | "authorName"
 > & {
   fallbackName: string;
   postsPromise: Promise<FeedPost[]>;
@@ -156,12 +159,20 @@ async function FeedSectionsWithSession({
     postsPromise,
   ]);
 
+  const likedPostIds = currentUser
+    ? await getLikedPostIds(
+        currentUser.id,
+        posts.map((post) => post.id),
+      )
+    : new Set<string>();
+
   return (
     <FeedSections
       {...props}
       posts={posts}
       isAuthorized={Boolean(currentUser)}
       currentUserHandle={currentUser ? `@${currentUser.username}` : null}
+      likedPostIds={likedPostIds}
       authorName={currentUser?.displayName ?? fallbackName}
     />
   );
