@@ -72,19 +72,24 @@ async function getCurrentUser(fallbackName: string): Promise<CurrentUser> {
   };
 }
 
-async function getFeedAuthors(postsPromise: Promise<FeedPost[]>) {
+async function getFeedAuthors(
+  postsPromise: Promise<FeedPost[]>,
+  excludeHandle?: string,
+) {
   const posts = await postsPromise;
 
   return Array.from(
     new Map<string, FeedAuthor>(
-      posts.map((post) => [
-        post.handle,
-        {
-          name: post.author,
-          handle: post.handle,
-          role: post.role,
-        },
-      ]),
+      posts
+        .filter((post) => post.handle !== excludeHandle)
+        .map((post) => [
+          post.handle,
+          {
+            name: post.author,
+            handle: post.handle,
+            role: post.role,
+          },
+        ]),
     ).values(),
   );
 }
@@ -439,6 +444,7 @@ async function AuthorsSection({
         title={title}
         description={description}
         saveAuthorAria={saveAuthorAria}
+        currentUserHandle={`@${currentUser.username}`}
       />
     </Suspense>
   );
@@ -449,13 +455,15 @@ async function AuthorsCard({
   title,
   description,
   saveAuthorAria,
+  currentUserHandle,
 }: {
   postsPromise: Promise<FeedPost[]>;
   title: string;
   description: string;
   saveAuthorAria: string;
+  currentUserHandle: string;
 }) {
-  const authors = await getFeedAuthors(postsPromise);
+  const authors = await getFeedAuthors(postsPromise, currentUserHandle);
 
   return (
     <Card>
