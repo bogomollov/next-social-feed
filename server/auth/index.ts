@@ -2,6 +2,7 @@ import { redis } from "@/server/cache/redis";
 import { db } from "@/server/db/client";
 import { account, session, user, verification } from "@/server/db/schema";
 import { sendAuthEmail } from "@/server/email";
+import { logSecurityEvent } from "@/server/lib/logger";
 import { env } from "@/shared/lib/env";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
@@ -39,6 +40,36 @@ export const auth = betterAuth({
     cookiePrefix: "next-social-feed",
     database: {
       generateId: "uuid",
+    },
+  },
+  logger: {
+    level: "warn",
+    log: (level, message, ...args) => {
+      logSecurityEvent(level === "error" ? "error" : "warn", "auth.internal", {
+        message,
+        details: args,
+      });
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (createdUser) => {
+          logSecurityEvent("info", "auth.user_created", {
+            userId: createdUser.id,
+            email: createdUser.email,
+          });
+        },
+      },
+    },
+    session: {
+      create: {
+        after: async (createdSession) => {
+          logSecurityEvent("info", "auth.session_created", {
+            userId: createdSession.userId,
+          });
+        },
+      },
     },
   },
   trustedOrigins: [env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL],

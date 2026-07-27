@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redis } from "@/server/cache/redis";
+import { logSecurityEvent } from "@/server/lib/logger";
 
 type RateLimitOptions = {
   limit: number;
@@ -33,7 +34,15 @@ export async function checkRateLimit(
     }
 
     const ttl = await redis.ttl(redisKey);
-    return { allowed: false, retryAfterSeconds: ttl > 0 ? ttl : windowSeconds };
+    const retryAfterSeconds = ttl > 0 ? ttl : windowSeconds;
+
+    logSecurityEvent("warn", "rate_limit.exceeded", {
+      key,
+      limit,
+      retryAfterSeconds,
+    });
+
+    return { allowed: false, retryAfterSeconds };
   } catch {
     return { allowed: true };
   }
