@@ -300,6 +300,39 @@ function AuthorsCardFallback({
   );
 }
 
+async function AuthorsSection({
+  fallbackName,
+  postsPromise,
+  title,
+  description,
+  saveAuthorAria,
+}: {
+  fallbackName: string;
+  postsPromise: Promise<FeedPost[]>;
+  title: string;
+  description: string;
+  saveAuthorAria: string;
+}) {
+  const currentUser = await getCurrentUser(fallbackName);
+
+  if (!currentUser) {
+    return null;
+  }
+
+  return (
+    <Suspense
+      fallback={<AuthorsCardFallback title={title} description={description} />}
+    >
+      <AuthorsCard
+        postsPromise={postsPromise}
+        title={title}
+        description={description}
+        saveAuthorAria={saveAuthorAria}
+      />
+    </Suspense>
+  );
+}
+
 async function AuthorsCard({
   postsPromise,
   title,
@@ -446,7 +479,8 @@ export default async function FeedPage({ params }: PageProps) {
                 />
               }
             >
-              <AuthorsCard
+              <AuthorsSection
+                fallbackName={t("profile.fallbackName")}
                 postsPromise={postsPromise}
                 title={t("authorsTitle")}
                 description={t("authorsDescription")}
