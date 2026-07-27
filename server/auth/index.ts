@@ -82,7 +82,6 @@ export const auth = betterAuth({
       }
     : {}),
   plugins: [
-    nextCookies(),
     username(),
     emailOTP({
       overrideDefaultEmailVerification: true,
@@ -112,5 +111,6 @@ export const auth = betterAuth({
         });
       },
     }),
+    nextCookies(),
   ],
 });
