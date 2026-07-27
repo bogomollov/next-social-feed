@@ -142,6 +142,28 @@ export const postLike = pgTable(
   }),
 );
 
+export const postRepost = pgTable(
+  "post_repost",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => post.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    postUserUnique: uniqueIndex("post_repost_post_user_unique").on(
+      table.postId,
+      table.userId,
+    ),
+    postIdIdx: index("post_repost_post_id_idx").on(table.postId),
+    userIdIdx: index("post_repost_user_id_idx").on(table.userId),
+  }),
+);
+
 export const postComment = pgTable(
   "post_comment",
   {
