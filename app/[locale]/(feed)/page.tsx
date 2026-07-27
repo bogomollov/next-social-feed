@@ -138,7 +138,6 @@ async function FeedSectionsWithSession({
 function SessionMemberCardFallback({
   fallbackName,
   guestState,
-  memberTitle,
   memberDescription,
   primaryCta,
   secondaryCta,
@@ -147,7 +146,6 @@ function SessionMemberCardFallback({
 }: {
   fallbackName: string;
   guestState: string;
-  memberTitle: string;
   memberDescription: string;
   primaryCta: string;
   secondaryCta: string;
@@ -157,9 +155,6 @@ function SessionMemberCardFallback({
   return (
     <Card>
       <CardHeader>
-        <Badge variant="outline" className="w-fit">
-          {memberTitle}
-        </Badge>
         <CardTitle>{fallbackName}</CardTitle>
         <CardDescription>{memberDescription}</CardDescription>
       </CardHeader>
@@ -197,7 +192,6 @@ async function SessionMemberCard({
   fallbackName,
   guestState,
   memberState,
-  memberTitle,
   memberDescription,
   primaryCta,
   secondaryCta,
@@ -207,7 +201,6 @@ async function SessionMemberCard({
   fallbackName: string;
   guestState: string;
   memberState: string;
-  memberTitle: string;
   memberDescription: string;
   primaryCta: string;
   secondaryCta: string;
@@ -219,9 +212,6 @@ async function SessionMemberCard({
   return (
     <Card>
       <CardHeader>
-        <Badge variant="outline" className="w-fit">
-          {memberTitle}
-        </Badge>
         <CardTitle>{currentUser?.displayName ?? fallbackName}</CardTitle>
         <CardDescription>{memberDescription}</CardDescription>
       </CardHeader>
@@ -415,32 +405,6 @@ export default async function FeedPage({ params }: PageProps) {
           </Suspense>
 
           <aside className="flex flex-col gap-6">
-            <Suspense
-              fallback={
-                <SessionMemberCardFallback
-                  fallbackName={t("profile.fallbackName")}
-                  guestState={t("guestState")}
-                  memberTitle={t("memberTitle")}
-                  memberDescription={t("memberDescription")}
-                  primaryCta={t("memberCard.primaryCta")}
-                  secondaryCta={t("memberCard.secondaryCta")}
-                  handleLabel={t("labels.handle")}
-                  statusLabel={t("labels.status")}
-                />
-              }
-            >
-              <SessionMemberCard
-                fallbackName={t("profile.fallbackName")}
-                guestState={t("guestState")}
-                memberState={t("memberState")}
-                memberTitle={t("memberTitle")}
-                memberDescription={t("memberDescription")}
-                primaryCta={t("memberCard.primaryCta")}
-                secondaryCta={t("memberCard.secondaryCta")}
-                handleLabel={t("labels.handle")}
-                statusLabel={t("labels.status")}
-              />
-            </Suspense>
 
             <Suspense
               fallback={
@@ -458,22 +422,6 @@ export default async function FeedPage({ params }: PageProps) {
               />
             </Suspense>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("savedTitle")}</CardTitle>
-                <CardDescription>{t("emptyStateDescription")}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="surface-subtle flex flex-col gap-2 p-5">
-                  <p className="text-sm font-medium text-foreground">
-                    {t("savedTitle")}
-                  </p>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    {t("savedEmpty")}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
           </aside>
         </div>
       </PageBody>
