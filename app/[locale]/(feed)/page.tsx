@@ -286,7 +286,7 @@ function FeedSummaryCardFallback({
   eyebrow: string;
 }) {
   return (
-    <Card>
+    <Card size="sm">
       <CardHeader>
         <Badge variant="subtle" className="w-fit gap-1.5">
           <IconSparkles size={14} />
@@ -296,7 +296,7 @@ function FeedSummaryCardFallback({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="surface-subtle p-4 text-sm text-muted-foreground">
+        <div className="surface-subtle p-3 text-sm text-muted-foreground">
           Loading feed summary...
         </div>
       </CardContent>
@@ -346,19 +346,19 @@ async function FeedSummaryCard({
   ];
 
   return (
-    <Card>
+    <Card size="sm">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+        <div className="grid grid-cols-2 gap-2">
           {summaryItems.map((item) => (
-            <div key={item.label} className="surface-subtle p-4">
-              <p className="text-2xl font-semibold tracking-tight text-foreground">
+            <div key={item.label} className="surface-subtle p-2.5">
+              <p className="text-lg font-semibold tracking-tight text-foreground">
                 {item.value}
               </p>
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                 {item.label}
               </p>
             </div>
