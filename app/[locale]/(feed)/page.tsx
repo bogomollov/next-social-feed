@@ -15,7 +15,6 @@ import {
 import { FeedSectionsSkeleton } from "@/features/feed/components/feed-sections-skeleton";
 import { getLikedPostIds } from "@/features/feed/server/likes";
 import { getFeedPosts, type FeedPost } from "@/features/feed/server/posts";
-import { getRepostedPostIds } from "@/features/feed/server/reposts";
 import { getOptionalSession } from "@/server/auth/session";
 import { Link } from "@/shared/i18n/navigation";
 import { routing } from "@/shared/i18n/routing";
@@ -150,12 +149,7 @@ async function FeedSectionsWithSession({
   ...props
 }: Omit<
   FeedSectionsProps,
-  | "posts"
-  | "isAuthorized"
-  | "currentUserHandle"
-  | "likedPostIds"
-  | "repostedPostIds"
-  | "authorName"
+  "posts" | "isAuthorized" | "currentUserHandle" | "likedPostIds" | "authorName"
 > & {
   fallbackName: string;
   postsPromise: Promise<FeedPost[]>;
@@ -165,14 +159,12 @@ async function FeedSectionsWithSession({
     postsPromise,
   ]);
 
-  const postIds = posts.map((post) => post.id);
-
-  const [likedPostIds, repostedPostIds] = currentUser
-    ? await Promise.all([
-        getLikedPostIds(currentUser.id, postIds),
-        getRepostedPostIds(currentUser.id, postIds),
-      ])
-    : [new Set<string>(), new Set<string>()];
+  const likedPostIds = currentUser
+    ? await getLikedPostIds(
+        currentUser.id,
+        posts.map((post) => post.id),
+      )
+    : new Set<string>();
 
   return (
     <FeedSections
@@ -181,7 +173,6 @@ async function FeedSectionsWithSession({
       isAuthorized={Boolean(currentUser)}
       currentUserHandle={currentUser ? `@${currentUser.username}` : null}
       likedPostIds={likedPostIds}
-      repostedPostIds={repostedPostIds}
       authorName={currentUser?.displayName ?? fallbackName}
     />
   );
@@ -604,6 +595,17 @@ export default async function FeedPage({ params }: PageProps) {
                   empty: t("comments.errors.empty"),
                   too_long: t("comments.errors.too_long"),
                   unauthorized: t("comments.errors.unauthorized"),
+                },
+              }}
+              repostLabels={{
+                placeholder: t("repost.placeholder"),
+                submit: t("repost.submit"),
+                toggleAria: t("repost.toggleAria"),
+                quotedFrom: t("repost.quotedFrom"),
+                errors: {
+                  too_long: t("repost.errors.too_long"),
+                  unauthorized: t("repost.errors.unauthorized"),
+                  not_found: t("repost.errors.not_found"),
                 },
               }}
             />

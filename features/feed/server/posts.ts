@@ -16,6 +16,11 @@ export type FeedPost = {
   likes: number;
   comments: number;
   reposts: number;
+  repostOf: {
+    author: string;
+    handle: string;
+    content: string;
+  } | null;
 };
 
 function formatRelativeTime(date: Date, locale: string) {
@@ -63,6 +68,9 @@ export async function getFeedPosts(locale: string): Promise<FeedPost[]> {
       likes: post.likes,
       comments: post.comments,
       reposts: post.reposts,
+      repostOfAuthorName: post.repostOfAuthorName,
+      repostOfAuthorHandle: post.repostOfAuthorHandle,
+      repostOfContent: post.repostOfContent,
       createdAt: post.createdAt,
     })
     .from(post)
@@ -82,5 +90,13 @@ export async function getFeedPosts(locale: string): Promise<FeedPost[]> {
     likes: row.likes,
     comments: row.comments,
     reposts: row.reposts,
+    repostOf:
+      row.repostOfAuthorName && row.repostOfAuthorHandle
+        ? {
+            author: row.repostOfAuthorName,
+            handle: row.repostOfAuthorHandle,
+            content: row.repostOfContent ?? "",
+          }
+        : null,
   }));
 }

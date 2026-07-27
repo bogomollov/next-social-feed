@@ -21,7 +21,6 @@ export type FeedSectionsProps = {
   isAuthorized: boolean;
   currentUserHandle: string | null;
   likedPostIds: Set<string>;
-  repostedPostIds: Set<string>;
   authorName: string;
   composerPlaceholder: string;
   composerSubmitLabel: string;
@@ -41,6 +40,17 @@ export type FeedSectionsProps = {
       empty: string;
       too_long: string;
       unauthorized: string;
+    };
+  };
+  repostLabels: {
+    placeholder: string;
+    submit: string;
+    toggleAria: string;
+    quotedFrom: string;
+    errors: {
+      too_long: string;
+      unauthorized: string;
+      not_found: string;
     };
   };
 };
@@ -74,13 +84,13 @@ export function FeedSections({
   isAuthorized,
   currentUserHandle,
   likedPostIds,
-  repostedPostIds,
   authorName,
   composerPlaceholder,
   composerSubmitLabel,
   composerTopicPlaceholder,
   composerErrors,
   commentsLabels,
+  repostLabels,
 }: FeedSectionsProps) {
   const topics = Array.from(
     new Set([...COMPOSER_TOPICS, ...posts.map((post) => post.topic)]),
@@ -126,20 +136,38 @@ export function FeedSections({
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col gap-5">
-                <p className="text-sm leading-7 text-foreground">{post.content}</p>
+                {post.content ? (
+                  <p className="text-sm leading-7 text-foreground">
+                    {post.content}
+                  </p>
+                ) : null}
+                {post.repostOf ? (
+                  <div className="surface-subtle flex flex-col gap-1 p-3">
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {repostLabels.quotedFrom} {post.repostOf.author} (
+                      {post.repostOf.handle})
+                    </p>
+                    <p className="text-sm leading-6 text-foreground">
+                      {post.repostOf.content}
+                    </p>
+                  </div>
+                ) : null}
                 <FeedInteractionBar
                   postId={post.id}
+                  postAuthor={post.author}
+                  postHandle={post.handle}
+                  postContent={post.content}
                   comments={post.comments}
                   likes={post.likes}
                   liked={likedPostIds.has(post.id)}
                   reposts={post.reposts}
-                  reposted={repostedPostIds.has(post.id)}
                   isAuthorized={isAuthorized}
                   isOwnPost={post.handle === currentUserHandle}
                   followLabel={followLabel}
                   registerLabel={registerLabel}
                   authorName={authorName}
                   commentsLabels={commentsLabels}
+                  repostLabels={repostLabels}
                 />
               </CardContent>
             </Card>
