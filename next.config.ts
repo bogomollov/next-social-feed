@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+import "./shared/lib/env";
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
 };

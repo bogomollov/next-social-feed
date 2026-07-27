@@ -1,19 +1,12 @@
-import { config } from "dotenv";
+import "@/shared/lib/load-env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { reset, seed } from "drizzle-seed";
 import { Pool } from "pg";
 import { post } from "@/server/db/schema";
-
-config({ path: ".env" });
-
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not defined");
-}
+import { env } from "@/shared/lib/env";
 
 const pool = new Pool({
-  connectionString,
+  connectionString: env.DATABASE_URL,
 });
 
 const db = drizzle(pool);

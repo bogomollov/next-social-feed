@@ -1,9 +1,8 @@
 import Redis from "ioredis";
+import { env } from "@/shared/lib/env";
 
-const redisUrl = process.env.REDIS_URL;
-
-export const redis = redisUrl
-  ? new Redis(redisUrl, {
+export const redis = env.REDIS_URL
+  ? new Redis(env.REDIS_URL, {
       maxRetriesPerRequest: null,
       enableReadyCheck: false,
     })

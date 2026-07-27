@@ -1,9 +1,9 @@
 import { Resend } from "resend";
+import { env } from "@/shared/lib/env";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const emailFrom = process.env.EMAIL_FROM ?? "onboarding@resend.dev";
+const emailFrom = env.EMAIL_FROM ?? "onboarding@resend.dev";
 
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
 
 export const sendAuthEmail = async ({
   to,
@@ -17,7 +17,7 @@ export const sendAuthEmail = async ({
   html?: string;
 }) => {
   if (!resend) {
-    if (process.env.NODE_ENV === "development") {
+    if (env.NODE_ENV === "development") {
       console.warn("Auth email delivery skipped because RESEND_API_KEY is not configured.", {
         subject,
       });

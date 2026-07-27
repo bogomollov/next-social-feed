@@ -2,6 +2,7 @@ import { redis } from "@/server/cache/redis";
 import { db } from "@/server/db/client";
 import { account, session, user, verification } from "@/server/db/schema";
 import { sendAuthEmail } from "@/server/email";
+import { env } from "@/shared/lib/env";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -9,8 +10,10 @@ import { nextCookies } from "better-auth/next-js";
 import { emailOTP } from "better-auth/plugins/email-otp";
 import { username } from "better-auth/plugins/username";
 
+const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } = env;
+
 export const auth = betterAuth({
-  appName: process.env.APP_NAME as string,
+  appName: env.APP_NAME,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -38,20 +41,21 @@ export const auth = betterAuth({
       generateId: "uuid",
     },
   },
-  trustedOrigins: [
-    process.env.BETTER_AUTH_URL,
-    process.env.NEXT_PUBLIC_APP_URL,
-  ].filter((value): value is string => Boolean(value)),
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      overrideUserInfoOnSignIn: true,
-      mapProfileToUser: (profile) => ({
-        username: profile.login,
-      }),
-    },
-  },
+  trustedOrigins: [env.BETTER_AUTH_URL, env.NEXT_PUBLIC_APP_URL],
+  ...(GITHUB_CLIENT_ID && GITHUB_CLIENT_SECRET
+    ? {
+        socialProviders: {
+          github: {
+            clientId: GITHUB_CLIENT_ID,
+            clientSecret: GITHUB_CLIENT_SECRET,
+            overrideUserInfoOnSignIn: true,
+            mapProfileToUser: (profile) => ({
+              username: profile.login,
+            }),
+          },
+        },
+      }
+    : {}),
   emailVerification: {
     autoSignInAfterVerification: true,
   },
