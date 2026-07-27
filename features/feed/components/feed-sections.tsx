@@ -20,6 +20,7 @@ export type FeedSectionsProps = {
   registerLabel: string;
   isAuthorized: boolean;
   currentUserHandle: string | null;
+  likedPostIds: Set<string>;
   authorName: string;
   composerPlaceholder: string;
   composerSubmitLabel: string;
@@ -59,6 +60,7 @@ export function FeedSections({
   registerLabel,
   isAuthorized,
   currentUserHandle,
+  likedPostIds,
   authorName,
   composerPlaceholder,
   composerSubmitLabel,
@@ -111,8 +113,10 @@ export function FeedSections({
               <CardContent className="flex flex-col gap-5">
                 <p className="text-sm leading-7 text-foreground">{post.content}</p>
                 <FeedInteractionBar
+                  postId={post.id}
                   comments={post.comments}
                   likes={post.likes}
+                  liked={likedPostIds.has(post.id)}
                   reposts={post.reposts}
                   isAuthorized={isAuthorized}
                   isOwnPost={post.handle === currentUserHandle}

@@ -119,3 +119,25 @@ export const post = pgTable(
     createdAtIdx: index("post_created_at_idx").on(table.createdAt),
   }),
 );
+
+export const postLike = pgTable(
+  "post_like",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => post.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    postUserUnique: uniqueIndex("post_like_post_user_unique").on(
+      table.postId,
+      table.userId,
+    ),
+    postIdIdx: index("post_like_post_id_idx").on(table.postId),
+    userIdIdx: index("post_like_user_id_idx").on(table.userId),
+  }),
+);

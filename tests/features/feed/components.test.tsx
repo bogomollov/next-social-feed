@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/shared/i18n/navigation", () => ({
   Link: ({
@@ -15,6 +15,11 @@ vi.mock("@/shared/i18n/navigation", () => ({
 
 vi.mock("@/features/feed/server/create-post", () => ({
   createPost: vi.fn(),
+}));
+
+const mockToggleLike = vi.fn();
+vi.mock("@/features/feed/server/toggle-like", () => ({
+  toggleLike: (...args: unknown[]) => mockToggleLike(...args),
 }));
 
 import { FeedInteractionBar } from "@/features/feed/components/feed-interaction-bar";
@@ -60,11 +65,17 @@ const posts = [
 ];
 
 describe("feed components", () => {
+  beforeEach(() => {
+    mockToggleLike.mockReset();
+  });
+
   it("renders signup links for unauthenticated interaction bars", () => {
     render(
       <FeedInteractionBar
+        postId="post-1"
         comments={2}
         likes={5}
+        liked={false}
         reposts={1}
         isAuthorized={false}
         isOwnPost={false}
@@ -83,8 +94,10 @@ describe("feed components", () => {
   it("renders follow controls for authenticated interaction bars", () => {
     render(
       <FeedInteractionBar
+        postId="post-1"
         comments={2}
         likes={5}
+        liked={false}
         reposts={1}
         isAuthorized
         isOwnPost={false}
@@ -100,8 +113,10 @@ describe("feed components", () => {
   it("hides the follow control on the user's own post", () => {
     render(
       <FeedInteractionBar
+        postId="post-1"
         comments={2}
         likes={5}
+        liked={false}
         reposts={1}
         isAuthorized
         isOwnPost
@@ -111,6 +126,55 @@ describe("feed components", () => {
     );
 
     expect(screen.queryByRole("button", { name: /follow/i })).not.toBeInTheDocument();
+  });
+
+  it("optimistically toggles the like button and calls toggleLike", async () => {
+    mockToggleLike.mockResolvedValue({ status: "success", liked: true });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+      />,
+    );
+
+    const likeButton = screen.getByRole("button", { name: /5/ });
+    fireEvent.click(likeButton);
+
+    expect(screen.getByRole("button", { name: /6/ })).toBeInTheDocument();
+    await waitFor(() => expect(mockToggleLike).toHaveBeenCalledWith("post-1"));
+  });
+
+  it("reverts the like toggle when the server action fails", async () => {
+    mockToggleLike.mockResolvedValue({ status: "error", error: "unauthorized" });
+
+    render(
+      <FeedInteractionBar
+        postId="post-1"
+        comments={2}
+        likes={5}
+        liked={false}
+        reposts={1}
+        isAuthorized
+        isOwnPost={false}
+        followLabel="Follow"
+        registerLabel="Register to follow"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /5/ }));
+    expect(screen.getByRole("button", { name: /6/ })).toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /5/ })).toBeInTheDocument(),
+    );
   });
 
   it("renders post cards", () => {
@@ -123,6 +187,7 @@ describe("feed components", () => {
         registerLabel="Register to follow"
         isAuthorized={false}
         currentUserHandle={null}
+        likedPostIds={new Set()}
         {...composerProps}
       />,
     );
@@ -145,6 +210,7 @@ describe("feed components", () => {
         registerLabel="Register to follow"
         isAuthorized
         currentUserHandle={null}
+        likedPostIds={new Set()}
         {...composerProps}
       />,
     );
@@ -165,6 +231,7 @@ describe("feed components", () => {
         registerLabel="Register to follow"
         isAuthorized
         currentUserHandle="@maya"
+        likedPostIds={new Set()}
         {...composerProps}
       />,
     );
