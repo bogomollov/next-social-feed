@@ -66,6 +66,7 @@ describe("feed components", () => {
         likes={5}
         reposts={1}
         isAuthorized={false}
+        isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
       />,
@@ -85,6 +86,7 @@ describe("feed components", () => {
         likes={5}
         reposts={1}
         isAuthorized
+        isOwnPost={false}
         followLabel="Follow"
         registerLabel="Register to follow"
       />,
@@ -92,6 +94,22 @@ describe("feed components", () => {
 
     expect(screen.getByRole("button", { name: /follow/i })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /register to follow/i })).not.toBeInTheDocument();
+  });
+
+  it("hides the follow control on the user's own post", () => {
+    render(
+      <FeedInteractionBar
+        comments={2}
+        likes={5}
+        reposts={1}
+        isAuthorized
+        isOwnPost
+        followLabel="Follow"
+        registerLabel="Register to follow"
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /follow/i })).not.toBeInTheDocument();
   });
 
   it("renders post cards", () => {
@@ -103,6 +121,7 @@ describe("feed components", () => {
         followLabel="Follow"
         registerLabel="Register to follow"
         isAuthorized={false}
+        currentUserHandle={null}
         {...composerProps}
       />,
     );
@@ -124,6 +143,7 @@ describe("feed components", () => {
         followLabel="Follow"
         registerLabel="Register to follow"
         isAuthorized
+        currentUserHandle={null}
         {...composerProps}
       />,
     );
@@ -132,5 +152,22 @@ describe("feed components", () => {
       screen.getByPlaceholderText("What's on your mind?"),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument();
+  });
+
+  it("does not show a follow button on the current user's own posts", () => {
+    render(
+      <FeedSections
+        posts={posts}
+        streamTitle="Main stream"
+        streamDescription="Description"
+        followLabel="Follow"
+        registerLabel="Register to follow"
+        isAuthorized
+        currentUserHandle="@maya"
+        {...composerProps}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: /follow/i })).not.toBeInTheDocument();
   });
 });

@@ -14,6 +14,7 @@ type FeedInteractionBarProps = {
   likes: number;
   reposts: number;
   isAuthorized: boolean;
+  isOwnPost: boolean;
   followLabel: string;
   registerLabel: string;
 };
@@ -23,6 +24,7 @@ export function FeedInteractionBar({
   likes,
   reposts,
   isAuthorized,
+  isOwnPost,
   followLabel,
   registerLabel,
 }: FeedInteractionBarProps) {
@@ -73,10 +75,12 @@ export function FeedInteractionBar({
           );
         })}
       </div>
-      <Button size="sm">
-        <IconUserPlus data-icon="inline-start" />
-        {followLabel}
-      </Button>
+      {isOwnPost ? null : (
+        <Button size="sm">
+          <IconUserPlus data-icon="inline-start" />
+          {followLabel}
+        </Button>
+      )}
     </div>
   );
 }

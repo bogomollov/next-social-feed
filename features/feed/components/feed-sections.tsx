@@ -19,6 +19,7 @@ export type FeedSectionsProps = {
   followLabel: string;
   registerLabel: string;
   isAuthorized: boolean;
+  currentUserHandle: string | null;
   authorName: string;
   composerPlaceholder: string;
   composerSubmitLabel: string;
@@ -45,6 +46,7 @@ export function FeedSections({
   followLabel,
   registerLabel,
   isAuthorized,
+  currentUserHandle,
   authorName,
   composerPlaceholder,
   composerSubmitLabel,
@@ -94,6 +96,7 @@ export function FeedSections({
                   likes={post.likes}
                   reposts={post.reposts}
                   isAuthorized={isAuthorized}
+                  isOwnPost={post.handle === currentUserHandle}
                   followLabel={followLabel}
                   registerLabel={registerLabel}
                 />

@@ -150,7 +150,10 @@ async function FeedSectionsWithSession({
   fallbackName,
   postsPromise,
   ...props
-}: Omit<FeedSectionsProps, "posts" | "isAuthorized" | "authorName"> & {
+}: Omit<
+  FeedSectionsProps,
+  "posts" | "isAuthorized" | "currentUserHandle" | "authorName"
+> & {
   fallbackName: string;
   postsPromise: Promise<FeedPost[]>;
 }) {
@@ -164,6 +167,7 @@ async function FeedSectionsWithSession({
       {...props}
       posts={posts}
       isAuthorized={Boolean(currentUser)}
+      currentUserHandle={currentUser ? `@${currentUser.username}` : null}
       authorName={currentUser?.displayName ?? fallbackName}
     />
   );
