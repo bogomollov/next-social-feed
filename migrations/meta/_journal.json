@@ -29,6 +29,13 @@
       "when": 1785169102743,
       "tag": "0003_post_likes",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785170627990,
+      "tag": "0004_post_comments",
+      "breakpoints": true
     }
   ]
 }
