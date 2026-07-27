@@ -24,6 +24,7 @@ const composerProps = {
   authorName: "Maya Torres",
   composerPlaceholder: "What's on your mind?",
   composerSubmitLabel: "Post",
+  composerTopicPlaceholder: "Topic",
   composerErrors: {
     empty: "Write something before posting.",
     too_long: "Keep your post under 500 characters.",

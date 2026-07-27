@@ -76,6 +76,7 @@
     "composer": {
       "placeholder": "What's on your mind?",
       "submit": "Post",
+      "topicPlaceholder": "Topic",
       "errors": {
         "empty": "Write something before posting.",
         "too_long": "Keep your post under 500 characters.",

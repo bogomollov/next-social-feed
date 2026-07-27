@@ -6,7 +6,8 @@ import { db } from "@/server/db/client";
 import { post } from "@/server/db/schema";
 
 const MAX_CONTENT_LENGTH = 500;
-const DEFAULT_TOPIC = "Update";
+const MAX_TOPIC_LENGTH = 60;
+const FALLBACK_TOPIC = "Update";
 const DEFAULT_ROLE = "Member";
 
 export type CreatePostState =
@@ -34,6 +35,10 @@ export async function createPost(
     return { status: "error", error: "too_long" };
   }
 
+  const topic =
+    String(formData.get("topic") ?? "").trim().slice(0, MAX_TOPIC_LENGTH) ||
+    FALLBACK_TOPIC;
+
   const username =
     session.user.username ?? session.user.email?.split("@")[0] ?? "member";
 
@@ -43,7 +48,7 @@ export async function createPost(
     authorName: session.user.name || username,
     authorHandle: `@${username}`,
     authorRole: DEFAULT_ROLE,
-    topic: DEFAULT_TOPIC,
+    topic,
     content,
   });
 

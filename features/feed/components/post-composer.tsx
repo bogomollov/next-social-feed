@@ -9,6 +9,13 @@ import {
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 
 const MAX_CONTENT_LENGTH = 500;
@@ -28,6 +35,8 @@ type PostComposerProps = {
   authorName: string;
   placeholder: string;
   submitLabel: string;
+  topicPlaceholder: string;
+  topics: string[];
   errorMessages: {
     empty: string;
     too_long: string;
@@ -39,6 +48,8 @@ export function PostComposer({
   authorName,
   placeholder,
   submitLabel,
+  topicPlaceholder,
+  topics,
   errorMessages,
 }: PostComposerProps) {
   const [state, formAction, isPending] = useActionState(
@@ -73,7 +84,24 @@ export function PostComposer({
                 {errorMessages[state.error]}
               </p>
             ) : null}
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between gap-3">
+              <Select
+                name="topic"
+                defaultValue={topics[0]}
+                required
+                disabled={isPending}
+              >
+                <SelectTrigger className="w-auto min-w-40">
+                  <SelectValue placeholder={topicPlaceholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  {topics.map((topic) => (
+                    <SelectItem key={topic} value={topic}>
+                      {topic}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Button type="submit" disabled={isPending} size="sm">
                 {submitLabel}
                 <IconSend2 data-icon="inline-end" />

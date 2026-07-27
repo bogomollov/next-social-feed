@@ -23,12 +23,15 @@ export type FeedSectionsProps = {
   authorName: string;
   composerPlaceholder: string;
   composerSubmitLabel: string;
+  composerTopicPlaceholder: string;
   composerErrors: {
     empty: string;
     too_long: string;
     unauthorized: string;
   };
 };
+
+const FALLBACK_TOPICS = ["Update", "Announcement", "Question", "Idea"];
 
 function getInitials(value: string) {
   return value
@@ -50,8 +53,11 @@ export function FeedSections({
   authorName,
   composerPlaceholder,
   composerSubmitLabel,
+  composerTopicPlaceholder,
   composerErrors,
 }: FeedSectionsProps) {
+  const topics = Array.from(new Set(posts.map((post) => post.topic)));
+
   return (
     <div className="flex flex-col gap-6">
       {isAuthorized ? (
@@ -59,6 +65,8 @@ export function FeedSections({
           authorName={authorName}
           placeholder={composerPlaceholder}
           submitLabel={composerSubmitLabel}
+          topicPlaceholder={composerTopicPlaceholder}
+          topics={topics.length > 0 ? topics : FALLBACK_TOPICS}
           errorMessages={composerErrors}
         />
       ) : null}

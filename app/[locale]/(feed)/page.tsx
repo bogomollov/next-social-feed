@@ -581,6 +581,7 @@ export default async function FeedPage({ params }: PageProps) {
               registerLabel={t("actions.register")}
               composerPlaceholder={t("composer.placeholder")}
               composerSubmitLabel={t("composer.submit")}
+              composerTopicPlaceholder={t("composer.topicPlaceholder")}
               composerErrors={{
                 empty: t("composer.errors.empty"),
                 too_long: t("composer.errors.too_long"),
