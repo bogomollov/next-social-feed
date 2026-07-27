@@ -136,7 +136,7 @@ async function SessionBadge({
   return (
     <Badge variant="outline" className="gap-1.5">
       <IconUserCircle size={14} />
-      {currentUser.displayName}
+      {`@${currentUser.username}`}
     </Badge>
   );
 }
@@ -352,7 +352,7 @@ async function FeedSummaryCard({
   ];
 
   return (
-    <Card size="sm">
+    <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -579,22 +579,7 @@ export default async function FeedPage({ params }: PageProps) {
                 />
               }
             >
-              <FeedSummaryCard
-                postsPromise={postsPromise}
-                title={t("pulseTitle")}
-                description={t("pulseDescription")}
-                eyebrow={t("searchEyebrow")}
-                summaryLabels={{
-                  posts: t("summary.posts"),
-                  authors: t("summary.authors"),
-                  likes: t("summary.likes"),
-                  comments: t("summary.comments"),
-                  reposts: t("summary.reposts"),
-                }}
-              />
-            </Suspense>
-
-            <Suspense
+              <Suspense
               fallback={
                 <AuthorsCardFallback
                   title={t("authorsTitle")}
@@ -608,6 +593,21 @@ export default async function FeedPage({ params }: PageProps) {
                 title={t("authorsTitle")}
                 description={t("authorsDescription")}
                 saveAuthorAria={t("labels.saveAuthorAria")}
+              />
+            </Suspense>
+
+              <FeedSummaryCard
+                postsPromise={postsPromise}
+                title={t("pulseTitle")}
+                description={t("pulseDescription")}
+                eyebrow={t("searchEyebrow")}
+                summaryLabels={{
+                  posts: t("summary.posts"),
+                  authors: t("summary.authors"),
+                  likes: t("summary.likes"),
+                  comments: t("summary.comments"),
+                  reposts: t("summary.reposts"),
+                }}
               />
             </Suspense>
           </aside>
