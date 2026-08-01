@@ -8,6 +8,14 @@ type AppLocale = (typeof routing.locales)[number];
 
 const localeSet = new Set<AppLocale>(routing.locales);
 
+const AUTH_ROUTE_SEGMENTS = new Set([
+  "login",
+  "signup",
+  "forgot-password",
+  "reset-password",
+  "verify-email",
+]);
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
@@ -33,11 +41,7 @@ export async function proxy(request: NextRequest) {
   const isLocaleRoot = segments.length === 1 && localeSet.has(locale);
 
   const isAuthRoute =
-    pathname.includes("/login") ||
-    pathname.includes("/signup") ||
-    pathname.includes("/forgot-password") ||
-    pathname.includes("/reset-password") ||
-    pathname.includes("/verify-email");
+    segments.length === 2 && AUTH_ROUTE_SEGMENTS.has(segments[1]);
   const isProtectedRoute = !isAuthRoute && pathname !== "/" && !isLocaleRoot;
 
   if (isProtectedRoute && !session) {
