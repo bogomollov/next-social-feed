@@ -1,38 +1,83 @@
-Use Drizzle ORM, Redis Cloud, hosting Vercel, Nano Postgres, better-auth, resend, agents skills
+<div align="center">
+<h1>Next Social Feed</h1>
+<p align="center">Современная социальная платформа с фокусом на производительность, типизацию и безопасность</p>
+</div>
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Начало работы
 
-## Getting Started
+1. Клонировать репозиторий
 
-First, run the development server:
+```bash
+git clone https://github.com/bogomollov/next-social-feed
+cd next-social-feed
+```
+
+2. Установить зависимости
+
+```bash
+npm install
+```
+
+3. Настроить переменные окружения
+
+Скопируйте `.env.example` в `.env`. Убедитесь, что все необходимые ключи (DATABASE_URL, AUTH_SECRET, REDIS_URL и др.) заполнены перед первым запуском.
+
+## Запуск проекта
+
+### Режим разработки
+
+Для запуска локального сервера с поддержкой hot-reload:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Приложение доступно по адресу: http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Тестирование
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Проект включает настроенный тестовый контур:
 
-## Learn More
+```bash
+# Запуск unit-тестов (Vitest)
+npm run test
 
-To learn more about Next.js, take a look at the following resources:
+# Запуск E2E тестов (Playwright)
+npm run test:e2e
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Работа с базой данных (Drizzle ORM)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+В проекте используется Drizzle ORM для управления схемой базы данных.
 
-## Deploy on Vercel
+- **Генерация миграций**: `npx drizzle-kit generate`
+- **Применение миграций**: `npx drizzle-kit migrate`
+- **Просмотр БД (Drizzle Studio)**: `npx drizzle-kit studio`
+- **Заполнение БД тестовыми данными**: `npm run db:seed`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Стек технологий
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Frontend & Framework**
+- Next.js 16 (App Router) + React 19
+- TypeScript, Tailwind CSS 4
+- next-intl (интернационализация)
+- next-themes (управление темой)
+- shadcn/ui, Radix UI, Lucide Icons
+
+**Backend & Data**
+- Better-Auth (аутентификация)
+- Drizzle ORM + PostgreSQL (Neon)
+- Redis (ioredis + better-auth-redis-storage)
+- Zod (валидация данных)
+- Resend (отправка email)
+
+**Testing & Quality**
+- Vitest + Testing Library
+- Playwright (E2E)
+- ESLint
+
+## Лицензия
+
+Copyright (c) 2026-present Bogdan Bogomolov<br>
+
+Проект распространяется под лицензией MIT. Дополнительную информацию см. в [LICENSE](LICENSE)
