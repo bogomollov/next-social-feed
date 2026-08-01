@@ -17,6 +17,7 @@ export async function checkRateLimit(
   { limit, windowSeconds }: RateLimitOptions,
 ): Promise<RateLimitResult> {
   if (!redis) {
+    logSecurityEvent("warn", "rate_limit.not_configured", { key });
     return { allowed: true };
   }
 
@@ -43,7 +44,12 @@ export async function checkRateLimit(
     });
 
     return { allowed: false, retryAfterSeconds };
-  } catch {
-    return { allowed: true };
+  } catch (error) {
+    logSecurityEvent("error", "rate_limit.unavailable", {
+      key,
+      message: error instanceof Error ? error.message : String(error),
+    });
+
+    return { allowed: false, retryAfterSeconds: windowSeconds };
   }
 }
