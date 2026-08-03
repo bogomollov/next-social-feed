@@ -26,9 +26,23 @@ test.describe("auth routes", () => {
     await expect(page.getByText("Passwords do not match.")).toBeVisible();
   });
 
+  test("forgot password page renders the request form", async ({ page }) => {
+    await page.goto("/en/forgot-password");
+
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Reset your password" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Send reset link" }),
+    ).toBeVisible();
+  });
+
   test("reset password route disables submit without a token", async ({ page }) => {
     await page.goto("/en/reset-password");
 
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Choose a new password" }),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Reset password" }),
     ).toBeDisabled();
@@ -37,6 +51,9 @@ test.describe("auth routes", () => {
   test("verify email route disables actions when email is missing", async ({ page }) => {
     await page.goto("/en/verify-email");
 
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Confirm your email" }),
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "Verify email" })).toBeDisabled();
     await expect(page.getByRole("button", { name: "Resend code" })).toBeDisabled();
   });

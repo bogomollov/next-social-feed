@@ -14,19 +14,6 @@
       "description": "Low-light workspace"
     }
   },
-  "AuthShell": {
-    "brand": "Social Feed",
-    "highlights": {
-      "logic": {
-        "title": "Secure sign-in",
-        "description": "Your credentials stay protected with encrypted sessions, every time you sign in."
-      },
-      "layout": {
-        "title": "One familiar experience",
-        "description": "Sign in, sign up, or recover your account — it always feels like the same place."
-      }
-    }
-  },
   "FeedPage": {
     "eyebrow": "Members feed",
     "title": "Social Feed",

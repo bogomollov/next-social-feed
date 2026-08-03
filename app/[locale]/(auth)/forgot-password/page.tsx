@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/features/auth/components/auth-shell";
+import { CenteredAuthCard } from "@/features/auth/components/centered-auth-card";
 import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-form";
 import { redirectIfAuthenticated } from "@/server/auth/session";
 
@@ -13,13 +13,12 @@ export default async function ForgotPasswordPage({
   const t = await getTranslations({ locale, namespace: "ForgotPasswordPage" });
 
   return (
-    <AuthShell
-      locale={locale}
+    <CenteredAuthCard
       badge={t("badge")}
       title={t("title")}
       description={t("description")}
     >
       <ForgotPasswordForm />
-    </AuthShell>
+    </CenteredAuthCard>
   );
 }

@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { AuthShell } from "@/features/auth/components/auth-shell";
+import { CenteredAuthCard } from "@/features/auth/components/centered-auth-card";
 import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 import { redirectIfAuthenticated } from "@/server/auth/session";
 
@@ -22,13 +22,12 @@ export default async function ResetPasswordPage({
     : resolvedSearchParams.token ?? null;
 
   return (
-    <AuthShell
-      locale={locale}
+    <CenteredAuthCard
       badge={t("badge")}
       title={t("title")}
       description={t("description")}
     >
       <ResetPasswordForm token={token} />
-    </AuthShell>
+    </CenteredAuthCard>
   );
 }
