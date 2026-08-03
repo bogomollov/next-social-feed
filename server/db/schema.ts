@@ -18,7 +18,6 @@ export const user = pgTable("user", {
   name: varchar("name", { length: 255 }),
   image: text("image"),
 
-  // Legacy field kept to avoid destructive migration paths from the old schema.
   passwordHash: text("password_hash"),
   githubId: varchar("github_id", { length: 255 }),
 
