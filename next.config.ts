@@ -10,7 +10,7 @@ const isProduction = env.NODE_ENV === "production";
 // would force every page to render dynamically and defeat cacheComponents.
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"};
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob:;
   font-src 'self';
