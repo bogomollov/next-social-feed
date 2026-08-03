@@ -208,5 +208,18 @@
       "resend_failed": "Unable to resend verification code."
     },
     "success": "A new verification code has been sent."
+  },
+  "NotFoundPage": {
+    "badge": "404",
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or may have been moved.",
+    "back_home": "Back to feed"
+  },
+  "ErrorPage": {
+    "badge": "Error",
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. You can try again or head back to the feed.",
+    "retry": "Try again",
+    "back_home": "Back to feed"
   }
 }

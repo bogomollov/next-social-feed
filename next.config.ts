@@ -4,10 +4,6 @@ import { env } from "./shared/lib/env";
 
 const isProduction = env.NODE_ENV === "production";
 
-// next-themes injects an inline bootstrap script (FOUC prevention) and an
-// inline style tag (disableTransitionOnChange), so script-src/style-src
-// can't drop 'unsafe-inline' without switching to nonce-based CSP, which
-// would force every page to render dynamically and defeat cacheComponents.
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"};
@@ -26,6 +22,9 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  experimental: {
+    globalNotFound: true,
+  },
   async headers() {
     return [
       {
