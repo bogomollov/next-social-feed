@@ -21,8 +21,34 @@ env:
   DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
 jobs:
+  gate:
+    name: Check commit type
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            MESSAGE="$PR_TITLE"
+          else
+            MESSAGE="$COMMIT_MESSAGE"
+          fi
+          if [[ "$MESSAGE" =~ ^chore(\(.+\))?!?: ]]; then
+            echo "Skipping CI for chore commit: $MESSAGE"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
   lint:
     name: Lint
+    needs: gate
+    if: needs.gate.outputs.skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +61,8 @@ jobs:
 
   typecheck:
     name: Typecheck
+    needs: gate
+    if: needs.gate.outputs.skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +75,8 @@ jobs:
 
   unit-tests:
     name: Unit tests
+    needs: gate
+    if: needs.gate.outputs.skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,6 +89,8 @@ jobs:
 
   e2e-tests:
     name: E2E tests
+    needs: gate
+    if: needs.gate.outputs.skip != 'true'
     runs-on: ubuntu-latest
     services:
       postgres:
